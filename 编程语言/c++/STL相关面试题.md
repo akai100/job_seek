@@ -56,3 +56,12 @@
   任务调度：总处理优先级最高的任务（如CPU调度）。
   Top K问题：维护大小为K的堆（如求前K大元素）。
   Dijkstra算法：优先扩展最短路径节点。
+
+  ## 2. vector的push_back和emplace_back有什么区别？
+push_back 和 emplace_back 都是用来向 std::vector 添加新元素的函数，主要区别在于：
++ push_back：需要一个已构造的对象，将其拷贝（或移动）到 vector 中。
++ emplace_back：直接在 vector 的存储空间中原地构造对象，避免了额外的拷贝或移动操作。
+性能比较
+  + push_back 需要传递一个现成的对象，可能会涉及拷贝或移动操作，效率较低。
+  + emplace_back 直接原地构造对象，省去了构造临时对象的开销，效率更高。
+  
