@@ -66,8 +66,11 @@
 +
 ### mtime和mtimecmp
 RISC-V 规范定义了 `mtime` 和 `mtimecmp` 寄存器，用于产生定时中断（如系统节拍中断）。
+
 mtime：`mtime` 是一个 64 位只读寄存器，提供当前计时器的计数值；
+
 mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断的触发时间；
+
 # xPortStartFirstTask
 ## 参数
 ## 功能
