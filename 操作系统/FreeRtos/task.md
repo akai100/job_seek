@@ -262,8 +262,11 @@ mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断�
 ## 功能
 ## 实现
 步骤 1：
+
 步骤 2：如果配置多核：调用```taskYIELD``（通过ecall触发软中断）触发任务切换；
+
 步骤 3：循环：
+
 步骤 3.1：调用接口```prvCheckTasksWaitingTermination```清理已经终止的任务（通过调用vTaskDelete删除的任务）；
 
 
