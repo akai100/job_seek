@@ -269,6 +269,12 @@ mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断�
 
 步骤 3.1：调用接口```prvCheckTasksWaitingTermination```清理已经终止的任务（通过调用vTaskDelete删除的任务）；
 
+步骤 3.2：如果配置非任务强占式：触发软中断，
+
+步骤 3.3：如果配置为任务强占式并且配置空闲任务主动让出CPU给同优先级任务：
+
+步骤 3.3.1：如果当前同Idle任务同优先级就绪列表长度大于核数，触发软中断
+
 
 # prvCheckForRunStateChange
 ## 参数
