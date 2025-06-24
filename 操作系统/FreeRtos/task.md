@@ -1067,11 +1067,65 @@ FreeRTOS 的任务通知机制是一种轻量级、高效的任务间通信（IP
 ## xTaskGenericNotifyFromISR
 
 ## vTaskGenericNotifyGiveFromISR
+### 参数
++ TaskHandle_t xTaskToNotify：
++ UBaseType_t uxIndexToNotify：
++ BaseType_t * pxHigherPriorityTaskWoken：
+### 功能
+### 实现
+步骤 1：ISR 进入临界区；
+
+步骤 1.1：保存任务当前通知态；
+
+步骤 1.2：设置任务通知态为已接收态；
+
+步骤 1.3：任务通知值++；
+
+步骤 1.4：如果任务之前通知状态为等待通知态：
+
+步骤 1.4.1：如果任务调度器未被挂起：
+
+步骤 1.4.1.1：从状态链表移除；
+
+步骤 1.4.1.2：调用接口```prvAddTaskToReadyList```添加任务到就绪链表；
+
+步骤 1.4.2：如果任务调度器被挂起：添加任务事件链表到Pending就绪链表；
+
+步骤 1.4.3：如果配置为单核：
+
+步骤 1.4.3.1：如果任务优先级大于当前任务优先级：
+
+步骤 1.4.3.1.1：pxHigherPriorityTaskWoken设置为TRUE；
+
+步骤 1.4.3.1.2：延迟切换为True;
+
+步骤 1.4.4：如果配置为多核：
+
+步骤 1.4.4.1：如果配置强占模式：
+
+步骤 1.4.4.1.1：调用```prvYieldForTask```强制切换任务；
+
+步骤 1.4.4.1.1：如果当前核延迟切换，设置pxHigherPriorityTaskWoken设置为TRUE；
+
+步骤 2：ISR 退出临界区；
+
 
 ## xTaskGenericNotifyStateClear
+## 参数
++ TaskHandle_t xTask：任务句柄
++ UBaseType_t uxIndexToClear：通知索引
+## 功能
+用于原子性地清除任务的通知状态而不修改通知值
+## 实现
+步骤 1：根据任务句柄获取任务 TCB;
 
+步骤 2：进入临界区：
 
+步骤 2.1：如果任务当前通知状态为**已接收通知态**
 
+步骤 2.1.1：设置任务当前通知状态为等待通知态，返回 Pass；
 
+步骤 2.2：返回 Fail;
 
+步骤 3：退出临界区；
 
