@@ -663,6 +663,20 @@ FreeRTOS 的任务通知机制是一种轻量级、高效的任务间通信（IP
 
 步骤 7.1：
 
+## xTaskNotify-xTaskGenericNotify
+### 参数
++ TaskHandle_t xTaskToNotify：任务句柄
++ UBaseType_t uxIndexToNotify：通知索引
++ uint32_t ulValue：通知携带的值
++ eNotifyAction eAction：通知操作类型
+  + 0：仅更新状态，不修改值；
+  + 1：按位设置
+  + 2：计数值加1
+  + 3：强制覆盖通知值
+  + 4：仅当未通知时设置
++ uint32_t * pulPreviousNotificationValue：返回先前的通知值；
+### 功能
+### 实现
 
 
 
