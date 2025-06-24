@@ -478,7 +478,81 @@ mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断�
 
 步骤 4.4.2：如果当前唤醒时间点小于下一个任务解阻塞时间，设置写一个任务解阻塞时间点位当前唤醒时间点；
 
+# 性能监控关键函数
+## ulTaskGetIdleRunTimePercent
+### 参数
+### 功能
+用于计算系统空闲任务（Idle Task）的运行时间百分比。这个百分比直接反映了系统的 CPU 利用率 和 负载状况。
+### 实现
+## ulTaskGetIdleRunTimeCounter
+### 参数
+### 功能
+### 实现
+## ulTaskGetRunTimeCounter
+### 参数
+### 功能
+### 实现
 
+# 任务通知机制
+## 原理
+### 核心概念
+FreeRTOS 的任务通知机制是一种轻量级、高效的任务间通信（IPC）和同步机制；
+核心概念：
++ 每个任务自带一个“通知值”：
++ 通知作为事件或数据载体：其他任务或中断服务程序（ISR）可以通过向目标任务发送“通知”来：（ulNotifiedValue）
+  + 通知一个事件发生
+  + 传递一个数值；
+  + 更新目标任务通知值的特定位；
++ 任务等待通知：目前任务可以使用API阻塞自身，等待通知的到来（可指定超时时间）；
++ 高效性
+
+### 通知值的操作方式（发送通知时指定）
+当向一个任务发送通知 (xTaskNotify, xTaskNotifyGive, xTaskNotifyAndQuery, xTaskNotifyAndQueryFromISR 等) 时，发送者可以指定如何更新目标任务的 ulNotifiedValue：
+### 接收/等待通知
+目标任务使用```ulTaskNotifyTake``` 或```xTaskNotifyWait```来等待通知；
++ ulTaskNotifyTake：
+  + 主要用于计数信号量场景；
+  + 阻塞任务（可选超时），直到收到通知；
+  + 在退出前，将通知值递减指定的数量（通常为1，用于模拟获取信号量）或清零（用于模拟获取二值信号量）
+  + 返回值是调用之前的通知值（对于计数信号量）或是否收到了通知（对于二值信号量）；
+### 状态与“Pengding”
+### 优点
+### 限制/注意事项
+## ulTaskGenericNotifyValueClear
+### 参数
+### 功能
+是 FreeRTOS 任务通知机制 的核心函数之一，用于原子性地清除任务通知值而不改变通知状态。这是 FreeRTOS 轻量级任务间通信的关键操作。
+### 实现
+
+## ulTaskGenericNotifyTake
+### 参数
++ uxIndexToWait	UBaseType_t：通知索引
++ xClearCountOnExit	BaseType_t：退出时清除策略：pdTRUE-归零计数器，pdFALSE-递减计数器
++ xTicksToWait	TickType_t：最大等待事件
+### 功能
+ 是 FreeRTOS 任务通知机制 的核心函数，用于实现轻量级的任务同步与事件等待；
+### 实现
+步骤 1：任务挂起；
+
+步骤 2：进入临界区；
+
+步骤 2.1：如果当前任务对应通知值为0：
+
+步骤 2.1.1：设置当前任务的通知状态为等待通知；
+
+步骤 2.1.2：如果超时时间大于0：需要阻塞；
+
+步骤 3：退出临界区；
+
+步骤 4：如果需要阻塞：调用```prvAddCurrentTaskToDelayedList```接口，添加当前任务到延迟任务列表；
+
+步骤 5：恢复所有任务；
+
+步骤 6：如果需要阻塞并且任务切换：
+
+步骤 7：进入临界区：
+
+步骤 7.1：
 
 
 
