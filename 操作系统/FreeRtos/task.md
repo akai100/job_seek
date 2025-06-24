@@ -19,6 +19,56 @@
 
 步骤 2.2.3.1.1：如果当前任务优先级 <= 强占最低优先
 
+# prvCreateStaticTask
+## 参数
+## 功能
+## 实现
+
+# xTaskCreateStatic
+## 参数
+## 功能
+## 实现
+
+# xTaskCreateStaticAffinitySet
+## 参数
+## 功能
+## 实现
+
+# prvCreateRestrictedStaticTask
+## 参数
+## 功能
+## 实现
+
+# xTaskCreateRestrictedStatic
+## 参数
+## 功能
+## 实现
+
+# xTaskCreateRestrictedStaticAffinitySet
+## 参数
+## 功能
+## 实现
+
+# prvCreateRestrictedTask
+## 参数
+## 功能
+## 实现
+
+# xTaskCreateRestricted
+## 参数
+## 功能
+## 实现
+
+# xTaskCreateRestrictedAffinitySet
+## 参数
+## 功能
+## 实现
+
+# prvCreateTask
+## 参数
+## 功能
+## 实现
+
 # xTaskCreate
 ## 参数
 ## 实现
@@ -84,251 +134,19 @@
 
 步骤 3.11：未开启内存保护单元：
 
-# vTaskStartScheduler
-## 参数
-## 功能
-启动RTOS任务调度
-## 实现
-步骤 1：
-
-步骤 2：调用接口```prvCreateIdleTasks```创建空闲任务;
-
-步骤 3：如果启动软件定时器，调用接口 ```xTimerCreateTimerTask```创建定时器任务；
-
-步骤 4：任务创建时执行额外的自定义初始化操作；
-
-步骤 5：关闭中断；
-
-步骤 6：调用接口 ```xPortStartScheduler```启用任务调度器；
-
-# xPortStartScheduler
+# xTaskCreateAffinitySet
 ## 参数
 ## 功能
 ## 实现
-步骤 1：
 
-步骤 2：调用```vPortSetupTimerInterrupt```接口，用于配置硬件定时器以产生固定频率的中断，这些中断将驱动操作系统的任务调度；
-
-步骤 3：如果定义了mtime寄存器地址和mtimecmp寄存器地址，使能机器模式下的定时器中断和外部中断；
-
-步骤 4：调用```xPortStartFirstTask```接口，启动第一个任务；
-
-## 解释
-### 为什么需要显示启动第一个任务？
-+ 调度器启动前，系统处于"无任务运行"状态；
-+ 没有任务上下文，CPU 不知道从哪里开始执；
-+ 需手动加载首个任务的上下文（栈指针/寄存器/入口点）；
-+
-### mtime和mtimecmp
-RISC-V 规范定义了 `mtime` 和 `mtimecmp` 寄存器，用于产生定时中断（如系统节拍中断）。
-
-mtime：`mtime` 是一个 64 位只读寄存器，提供当前计时器的计数值；
-
-mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断的触发时间；
-
-# xPortStartFirstTask
-## 参数
-## 功能
-通过模拟中断返回机制，将 CPU 上下文切换到第一个任务。
-## 实现
-步骤 1：加载当前任务控制块指针；
-
-步骤 2：恢复任务上下文（模拟中断返回）；
-
-步骤 3：恢复关键系统寄存器；
-
-步骤 4：调整栈指针（调过已恢复的上下文）；
-
-步骤 5：强制返回用户模式并跳转到任务；
-## 解释
-# vTaskSwitchContext - 单核
-## 参数
-## 功能
-任务调度时，选择下一个要运行的任务；
-## 实现
-步骤 1：任务调度器挂起：
-
-步骤 2：任务调度器未挂起：
-
-步骤 2.1：如果启用运行时任务统计功能：
-
-步骤 2.1.1：
-
-步骤 2.2：检查栈溢出
-
-步骤 2.3：高效选择最高优先级就绪任务；
-
-步骤 2.3.1：从当前就绪任务选最高优先级开始遍历继续队列；
-
-步骤 2.3.2：设置当前任务控制块；
-
-# vTaskSwitchContext-多核
+# prvInitialiseNewTask
 ## 参数
 ## 功能
 ## 实现
-步骤 1：获取任务锁；
 
-步骤 2：获取ISR锁；
+# prvAddNewTaskToReadyList-单核
 
-步骤 3：任务调度器挂起：
-
-步骤 4：任务调度器未挂起：
-
-步骤 4.1：如果启用运行时任务统计功能：
-
-步骤 4.2：检查栈溢出；
-
-步骤 4.3：调用```prvSelectHighestPriorityTask```接口选择最高优先级任务
-
-步骤 5：释放ISR锁；
-
-步骤 6：释放任务锁；
-
-# prvSelectHighestPriorityTask
-## 参数
-## 功能
-## 实现
-步骤 1：如果配置核亲和度为1，
-
-步骤 2：配置未开启运行多优先级
-
-步骤 3：如果当前任务的当前任务同优先级就绪队列包含当前任务
-
-步骤 3.1：
-
-步骤 3.2：
-
-步骤 4：
-
-步骤 4.1：当前优先级就绪队列不为空：
-
-步骤 4.1.1：遍历当前优先级就绪队里：
-
-步骤 4.1.1.1：当前就绪任务处于非运行态：
-
-步骤 4.1.1.1.1：如果核亲和度值不为1或则当前就绪任务
-
-步骤 4.1.1.1.1.1：设置当前运行任务的运行状态为非运行态；
-
-步骤 4.1.1.1.1.2：如果核亲和度配置为1：
-
-步骤 4.1.1.1.1.3：当前就绪任务的运行状态设置为CoreID；
-
-当前 4.1.1.1.1.4：当前运行指针指向当前就绪任务；
-
-步骤 4.1.1.2：当前就绪任务等于当前运行任务：
-
-步骤 4.1.1.2.1：如果核亲和度不为1或者当前就绪任务核亲和度掩码
-
-步骤 4.1.1.3：否则：
-
-# prvCreateIdleTasks
-## 参数
-## 功能
-创建空闲任务
-## 实现
-步骤 1：
-步骤 2：对core0 ~ coreN,
-
-# prvCheckTasksWaitingTermination
-## 参数
-## 功能
-当一个任务被删除时，如果该任务是由内核动态分配（即使用xTaskCreate创建），那么它的TCB（任务控制块）和栈需要被释放。由于删除任务的操作可能发生在中断上下文或其他任务中，
-直接释放内存可能不安全（特别是在实时系统中），因此FreeRTOS采用了一种延迟清理机制：将需要清理的任务的TCB添加到一个终止任务列表中，然后由空闲任务（Idle Task）在安全的上下文中实际执行清理工作。
-## 实现
-步骤 1：待清理删除任务数 > 0 :
-
-步骤 1.1：配置为单核：
-
-步骤 1.1.1：调用```taskENTER_CRITICAL```进入临界区；
-
-步骤 1.1.2：从待终结任务列表，取出任务 TCB；
-
-步骤 1.1.3：从状态列表移除；
-
-步骤 1.1.4：当前任务数-1；
-
-步骤 1.1.5：当前待清理任务数-1；
-
-步骤 1.1.6：调用```taskEXIT_CRITICAL```退出临界区；
-
-步骤 1.1.7：调用```prvDeleteTCB```释放TCB;
-
-步骤 1.2：配置多核：
-
-步骤 1.2.1：```taskENTER_CRITICAL```
-
-步骤 1.2.2：待清理任务数 > 0:
-
-步骤 1.2.2.1：从待终结任务列表获取第一个TCB;
-
-步骤 1.2.2.2：待终结任务运行状态为非运行态：
-
-步骤 1.2.2.2.1：从状态列表移除；
-
-步骤 1.2.2.2.2: 当前任务数-1；
-
-步骤 1.2.2.2.3：当前待清理任务数-1；
-
-步骤 1.2.3：否则：
-
-步骤 1.2.3.1：调用```taskEXIT_CRITICAL```接口，退出临界区
-
-步骤 1.2.3.2：beak;
-
-步骤 1.
-
-# prvIdleTask
-## 参数
-## 功能
-## 实现
-步骤 1：
-
-步骤 2：如果配置多核：调用```taskYIELD``（通过ecall触发软中断）触发任务切换；
-
-步骤 3：循环：
-
-步骤 3.1：调用接口```prvCheckTasksWaitingTermination```清理已经终止的任务（通过调用vTaskDelete删除的任务）；
-
-步骤 3.2：如果配置非任务强占式：触发软中断，
-
-步骤 3.3：如果配置为任务强占式并且配置空闲任务主动让出CPU给同优先级任务：
-
-步骤 3.3.1：如果当前同Idle任务同优先级就绪列表长度大于核数，触发软中断
-
-
-# prvCheckForRunStateChange
-## 参数
-## 功能
-负责检测任务状态变化并触发必要的调度操作， 
-## 实现
-步骤 1：获取核当前运行任何 TCB；
-
-步骤 2：如果核当前任务处于主动让出CPU控制权态：
-
-步骤 2.1：获取当前临界嵌套深度；
-
-步骤 2.1.1：当前临界嵌套深度大于0：
-
-步骤 2.1.1.1：设置临界嵌套深度为0；
-
-步骤 2.1.1.1：释放中断锁；
-
-步骤 2.1.2：释放任务锁；
-
-步骤 2.1.3：开启内存屏障；
-
-步骤 2.1.4：
-
-步骤 2.1.5：重新启用中断；
-
-步骤 2.1.6：
-
-步骤 2.1.7：去使能中断
-
-步骤 2.1.8：获取任务锁；
-
-步骤 2.1.9：获取中断锁；
+# prvAddNewTaskToReadyList-多核
 
 # vTaskDelete
 ## 参数
@@ -382,6 +200,11 @@ mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断�
 
 步骤 12.1：待删除任务等于当前任务，触发任务调用
 
+# xTaskDelayUntil
+## 参数
+## 功能
+## 实现
+
 # vTaskDelay
 ## 参数
 ## 功能
@@ -397,6 +220,133 @@ mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断�
 步骤 2：如果没有发生过调度器切换：
 
 步骤 2.1：调用```taskYIELD_WITHIN_API```触发任务切换；
+
+# eTaskGetState
+## 参数
+## 功能
+## 实现
+
+# uxTaskPriorityGet
+## 参数
+## 功能
+## 实现
+
+# uxTaskPriorityGetFromISR
+## 参数
+## 功能
+## 实现
+
+# uxTaskBasePriorityGet
+## 参数
+## 功能
+## 实现
+
+# uxTaskBasePriorityGetFromISR
+## 参数
+## 功能
+## 实现
+
+# vTaskPrioritySet
+## 参数
+## 功能
+## 实现
+
+# vTaskCoreAffinitySet
+## 参数
+## 功能
+动态设置一个任务的处理器亲和性（CPU Affinity）。它控制任务可以在哪些处理器核心上运行。
++ 指定允许的核心集： 将任务限制为只能在xCoreAffinityMask参数指定的一个或多个特定 CPU 核心上执行。
++ 动态修改： 可以在任务运行期间的任何时候调用此函数（包括从其他任务或中断服务例程中调用，但需注意同步问题），以改变任务的亲和性。
++ 精细控制： 提供对任务执行位置的细粒度控制。
+## 实现
+步骤 1：进入临界区；
+
+步骤 2：根据任务句柄获取任务 TCB；
+
+步骤 3：设置任务 TCB 的核亲和度掩码；
+
+步骤 4：任务调度器运行中：
+
+步骤 4.1：任务运行中：
+
+步骤 4.1.1：获取任务运行的CoreID；
+
+步骤 4.1.2：如果运行的CoreID不在亲和度掩码，则调用```prvYieldCore```切换任务；
+
+步骤 4.2：任务未运行：
+
+步骤 4.2.1：如果开启任务强占式：
+
+步骤 4.2.1.1：获取任务之前不允许运行的核;
+
+步骤 4.2.1.2：如果任务不允许运行的核出现在当前亲和度掩码：调用```prvYieldForTask```接口，
+
+步骤 5：退出临界区；
+
+# vTaskCoreAffinityGet
+## 参数
+## 功能
+## 实现
+
+# vTaskPreemptionDisable
+## 参数
+## 功能
+## 实现
+
+# vTaskPreemptionEnable
+## 参数
+## 功能
+## 实现
+
+# vTaskSuspend
+## 参数
+## 功能
+## 实现
+
+# prvTaskIsTaskSuspended
+## 参数
+## 功能
+## 实现
+
+# vTaskResume
+## 参数
+## 功能
+## 实现
+
+# xTaskResumeFromISR
+## 参数
+## 功能
+## 实现
+
+# prvCreateIdleTasks
+## 参数
+## 功能
+创建空闲任务
+## 实现
+步骤 1：
+步骤 2：对core0 ~ coreN,
+
+# vTaskStartScheduler
+## 参数
+## 功能
+启动RTOS任务调度
+## 实现
+步骤 1：
+
+步骤 2：调用接口```prvCreateIdleTasks```创建空闲任务;
+
+步骤 3：如果启动软件定时器，调用接口 ```xTimerCreateTimerTask```创建定时器任务；
+
+步骤 4：任务创建时执行额外的自定义初始化操作；
+
+步骤 5：关闭中断；
+
+步骤 6：调用接口 ```xPortStartScheduler```启用任务调度器；
+
+# vTaskEndScheduler
+## 参数
+## 功能
+## 实现
 
 # vTaskSuspendAll
 ## 参数
@@ -440,37 +390,420 @@ mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断�
 
 步骤 2.2.9：恢复中断；
 
-# vTaskCoreAffinitySet
+# prvGetExpectedIdleTime
 ## 参数
 ## 功能
-动态设置一个任务的处理器亲和性（CPU Affinity）。它控制任务可以在哪些处理器核心上运行。
-+ 指定允许的核心集： 将任务限制为只能在xCoreAffinityMask参数指定的一个或多个特定 CPU 核心上执行。
-+ 动态修改： 可以在任务运行期间的任何时候调用此函数（包括从其他任务或中断服务例程中调用，但需注意同步问题），以改变任务的亲和性。
-+ 精细控制： 提供对任务执行位置的细粒度控制。
 ## 实现
-步骤 1：进入临界区；
 
-步骤 2：根据任务句柄获取任务 TCB；
+# xTaskResumeAll
+## 参数
+## 功能
+## 实现
 
-步骤 3：设置任务 TCB 的核亲和度掩码；
+# xTaskGetTickCount
+## 参数
+## 功能
+## 实现
 
-步骤 4：任务调度器运行中：
+# xTaskGetTickCountFromISR
+## 参数
+## 功能
+## 实现
 
-步骤 4.1：任务运行中：
+# uxTaskGetNumberOfTasks
+## 参数
+## 功能
+## 实现
 
-步骤 4.1.1：获取任务运行的CoreID；
+# pcTaskGetName
+## 参数
+## 功能
+## 实现
 
-步骤 4.1.2：如果运行的CoreID不在亲和度掩码，则调用```prvYieldCore```切换任务；
+# prvSearchForNameWithinSingleList - 单核
+## 参数
+## 功能
+## 实现
 
-步骤 4.2：任务未运行：
+# prvSearchForNameWithinSingleList - 多核
+## 参数
+## 功能
+## 实现
 
-步骤 4.2.1：如果开启任务强占式：
+# xTaskGetHandle
+## 参数
+## 功能
+## 实现
 
-步骤 4.2.1.1：获取任务之前不允许运行的核;
+# xTaskGetStaticBuffers
+## 参数
+## 功能
+## 实现
 
-步骤 4.2.1.2：如果任务不允许运行的核出现在当前亲和度掩码：调用```prvYieldForTask```接口，
+# uxTaskGetSystemState
+## 参数
+## 功能
+## 实现
 
-步骤 5：退出临界区；
+# xTaskGetIdleTaskHandle
+## 參數
+## 功能
+## 实现
+
+# xTaskGetIdleTaskHandleForCore
+## 参数
+## 功能
+## 实现
+
+# vTaskStepTick
+## 参数
+## 功能
+## 实现
+
+# xTaskCatchUpTicks
+## 参数
+## 功能
+## 实现
+
+# xTaskAbortDelay
+## 参数
+## 功能
+## 实现
+
+# xTaskIncrementTick
+## 参数
+## 功能
+## 实现
+
+# vTaskSetApplicationTaskTag
+## 参数
+## 功能
+## 实现
+
+# xTaskGetApplicationTaskTag
+## 参数
+## 功能
+## 实现
+
+# xTaskGetApplicationTaskTagFromISR
+## 参数
+## 功能
+## 实现
+
+# xTaskCallApplicationTaskHook
+## 参数
+## 功能
+## 实现
+
+# vTaskSwitchContext - 单核
+## 参数
+## 功能
+任务调度时，选择下一个要运行的任务；
+## 实现
+步骤 1：任务调度器挂起：
+
+步骤 2：任务调度器未挂起：
+
+步骤 2.1：如果启用运行时任务统计功能：
+
+步骤 2.1.1：
+
+步骤 2.2：检查栈溢出
+
+步骤 2.3：高效选择最高优先级就绪任务；
+
+步骤 2.3.1：从当前就绪任务选最高优先级开始遍历继续队列；
+
+步骤 2.3.2：设置当前任务控制块；
+
+# vTaskSwitchContext-多核
+## 参数
+## 功能
+## 实现
+步骤 1：获取任务锁；
+
+步骤 2：获取ISR锁；
+
+步骤 3：任务调度器挂起：
+
+步骤 4：任务调度器未挂起：
+
+步骤 4.1：如果启用运行时任务统计功能：
+
+步骤 4.2：检查栈溢出；
+
+步骤 4.3：调用```prvSelectHighestPriorityTask```接口选择最高优先级任务
+
+步骤 5：释放ISR锁；
+
+步骤 6：释放任务锁；
+
+# vTaskPlaceOnEventList
+## 参数
+## 功能
+## 实现
+
+# vTaskPlaceOnUnorderedEventList
+
+# vTaskPlaceOnEventListRestricted
+
+# xTaskRemoveFromEventList
+
+# vTaskRemoveFromUnorderedEventList
+
+# vTaskSetTimeOutState
+
+# vTaskInternalSetTimeOutState
+
+# xTaskCheckForTimeOut
+
+# vTaskMissedYield
+
+# uxTaskGetTaskNumber
+
+# vTaskSetTaskNumber
+
+# prvPassiveIdleTask
+
+# prvIdleTask
+## 参数
+## 功能
+## 实现
+步骤 1：
+
+步骤 2：如果配置多核：调用```taskYIELD``（通过ecall触发软中断）触发任务切换；
+
+步骤 3：循环：
+
+步骤 3.1：调用接口```prvCheckTasksWaitingTermination```清理已经终止的任务（通过调用vTaskDelete删除的任务）；
+
+步骤 3.2：如果配置非任务强占式：触发软中断，
+
+步骤 3.3：如果配置为任务强占式并且配置空闲任务主动让出CPU给同优先级任务：
+
+步骤 3.3.1：如果当前同Idle任务同优先级就绪列表长度大于核数，触发软中断
+
+# eTaskConfirmSleepModeStatus
+
+# vTaskSetThreadLocalStoragePointer
+
+# pvTaskGetThreadLocalStoragePointer
+
+# vTaskAllocateMPURegions
+
+# prvInitialiseTaskLists
+
+# prvCheckTasksWaitingTermination
+## 参数
+## 功能
+当一个任务被删除时，如果该任务是由内核动态分配（即使用xTaskCreate创建），那么它的TCB（任务控制块）和栈需要被释放。由于删除任务的操作可能发生在中断上下文或其他任务中，
+直接释放内存可能不安全（特别是在实时系统中），因此FreeRTOS采用了一种延迟清理机制：将需要清理的任务的TCB添加到一个终止任务列表中，然后由空闲任务（Idle Task）在安全的上下文中实际执行清理工作。
+## 实现
+步骤 1：待清理删除任务数 > 0 :
+
+步骤 1.1：配置为单核：
+
+步骤 1.1.1：调用```taskENTER_CRITICAL```进入临界区；
+
+步骤 1.1.2：从待终结任务列表，取出任务 TCB；
+
+步骤 1.1.3：从状态列表移除；
+
+步骤 1.1.4：当前任务数-1；
+
+步骤 1.1.5：当前待清理任务数-1；
+
+步骤 1.1.6：调用```taskEXIT_CRITICAL```退出临界区；
+
+步骤 1.1.7：调用```prvDeleteTCB```释放TCB;
+
+步骤 1.2：配置多核：
+
+步骤 1.2.1：```taskENTER_CRITICAL```
+
+步骤 1.2.2：待清理任务数 > 0:
+
+步骤 1.2.2.1：从待终结任务列表获取第一个TCB;
+
+步骤 1.2.2.2：待终结任务运行状态为非运行态：
+
+步骤 1.2.2.2.1：从状态列表移除；
+
+步骤 1.2.2.2.2: 当前任务数-1；
+
+步骤 1.2.2.2.3：当前待清理任务数-1；
+
+步骤 1.2.3：否则：
+
+步骤 1.2.3.1：调用```taskEXIT_CRITICAL```接口，退出临界区
+
+步骤 1.2.3.2：beak;
+
+步骤 1.
+
+
+# vTaskGetInfo
+
+# prvListTasksWithinSingleList
+
+# prvTaskCheckFreeStackSpace
+
+# uxTaskGetStackHighWaterMark2
+
+# uxTaskGetStackHighWaterMark
+
+# prvDeleteTCB
+
+# prvResetNextTaskUnblockTime
+
+# xTaskGetCurrentTaskHandle - 单核
+
+# xTaskGetCurrentTaskHandle - 多核
+
+# xTaskGetCurrentTaskHandleForCore
+
+# xTaskGetSchedulerState
+
+# xTaskPriorityInherit
+
+# xTaskPriorityDisinherit
+
+# vTaskPriorityDisinheritAfterTimeout
+
+# vTaskYieldWithinAPI
+
+# vTaskEnterCritical - 单核
+
+# vTaskEnterCritical - 多核
+
+# vTaskEnterCriticalFromISR
+
+# vTaskExitCritical
+
+# vTaskExitCriticalFromISR
+
+# prvWriteNameToBuffer
+
+# vTaskListTasks
+
+# vTaskGetRunTimeStatistics
+
+# uxTaskResetEventItemValue
+
+# pvTaskIncrementMutexHeldCount
+
+# xPortStartScheduler
+
+## 参数
+## 功能
+## 实现
+步骤 1：
+
+步骤 2：调用```vPortSetupTimerInterrupt```接口，用于配置硬件定时器以产生固定频率的中断，这些中断将驱动操作系统的任务调度；
+
+步骤 3：如果定义了mtime寄存器地址和mtimecmp寄存器地址，使能机器模式下的定时器中断和外部中断；
+
+步骤 4：调用```xPortStartFirstTask```接口，启动第一个任务；
+
+## 解释
+### 为什么需要显示启动第一个任务？
++ 调度器启动前，系统处于"无任务运行"状态；
++ 没有任务上下文，CPU 不知道从哪里开始执；
++ 需手动加载首个任务的上下文（栈指针/寄存器/入口点）；
++
+### mtime和mtimecmp
+RISC-V 规范定义了 `mtime` 和 `mtimecmp` 寄存器，用于产生定时中断（如系统节拍中断）。
+
+mtime：`mtime` 是一个 64 位只读寄存器，提供当前计时器的计数值；
+
+mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断的触发时间；
+
+# xPortStartFirstTask
+## 参数
+## 功能
+通过模拟中断返回机制，将 CPU 上下文切换到第一个任务。
+## 实现
+步骤 1：加载当前任务控制块指针；
+
+步骤 2：恢复任务上下文（模拟中断返回）；
+
+步骤 3：恢复关键系统寄存器；
+
+步骤 4：调整栈指针（调过已恢复的上下文）；
+
+步骤 5：强制返回用户模式并跳转到任务；
+## 解释
+
+# prvSelectHighestPriorityTask
+## 参数
+## 功能
+## 实现
+步骤 1：如果配置核亲和度为1，
+
+步骤 2：配置未开启运行多优先级
+
+步骤 3：如果当前任务的当前任务同优先级就绪队列包含当前任务
+
+步骤 3.1：
+
+步骤 3.2：
+
+步骤 4：
+
+步骤 4.1：当前优先级就绪队列不为空：
+
+步骤 4.1.1：遍历当前优先级就绪队里：
+
+步骤 4.1.1.1：当前就绪任务处于非运行态：
+
+步骤 4.1.1.1.1：如果核亲和度值不为1或则当前就绪任务
+
+步骤 4.1.1.1.1.1：设置当前运行任务的运行状态为非运行态；
+
+步骤 4.1.1.1.1.2：如果核亲和度配置为1：
+
+步骤 4.1.1.1.1.3：当前就绪任务的运行状态设置为CoreID；
+
+当前 4.1.1.1.1.4：当前运行指针指向当前就绪任务；
+
+步骤 4.1.1.2：当前就绪任务等于当前运行任务：
+
+步骤 4.1.1.2.1：如果核亲和度不为1或者当前就绪任务核亲和度掩码
+
+步骤 4.1.1.3：否则：
+
+# prvCheckForRunStateChange
+## 参数
+## 功能
+负责检测任务状态变化并触发必要的调度操作， 
+## 实现
+步骤 1：获取核当前运行任何 TCB；
+
+步骤 2：如果核当前任务处于主动让出CPU控制权态：
+
+步骤 2.1：获取当前临界嵌套深度；
+
+步骤 2.1.1：当前临界嵌套深度大于0：
+
+步骤 2.1.1.1：设置临界嵌套深度为0；
+
+步骤 2.1.1.1：释放中断锁；
+
+步骤 2.1.2：释放任务锁；
+
+步骤 2.1.3：开启内存屏障；
+
+步骤 2.1.4：
+
+步骤 2.1.5：重新启用中断；
+
+步骤 2.1.6：
+
+步骤 2.1.7：去使能中断
+
+步骤 2.1.8：获取任务锁；
+
+步骤 2.1.9：获取中断锁；
 
 # prvAddCurrentTaskToDelayedList
 ## 参数
@@ -523,6 +856,8 @@ mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断�
 ### 参数
 ### 功能
 ### 实现
+## ulTaskGetRunTimePercent
+
 
 # 任务通知机制
 ## 原理
@@ -729,10 +1064,11 @@ FreeRTOS 的任务通知机制是一种轻量级、高效的任务间通信（IP
 步骤 3：退出临界区；
 
 
+## xTaskGenericNotifyFromISR
 
+## vTaskGenericNotifyGiveFromISR
 
-
-
+## xTaskGenericNotifyStateClear
 
 
 
