@@ -697,8 +697,22 @@
 # vTaskPriorityDisinheritAfterTimeout
 
 # vTaskYieldWithinAPI
+## 参数
+## 功能
+## 实现
+
 
 # vTaskEnterCritical - 单核
+## 参数
+## 功能
+## 实现
+步骤 1：调用```portDISABLE_INTERRUPTS```去使能中断；
+
+步骤 2：任务调度器运行中：
+
+步骤 2.1：当前任务临界区嵌套深度++；
+
+步骤 2.2：如果当前任务临界区嵌套深度等于1：assert不在ISR；
 
 # vTaskEnterCritical - 多核
 ## 参数
@@ -718,7 +732,7 @@
 
 步骤 2.3：调用```portGET_CRITICAL_NESTING_COUNT``获取临界区嵌套深度，如果深度等于1：
 
-步骤 2.3.1：如果
+步骤 2.3.1：如果调度器没有挂起：调用接口```prvCheckForRunStateChange```
 
 # vTaskEnterCriticalFromISR
 ## 参数
