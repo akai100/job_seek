@@ -3,14 +3,24 @@
 ### pxCurrentTCB 或 pxCurrentTCBs
 ### pxReadyTasksLists
 ### xDelayedTaskList1
+#### 定义
+#### 作用
+用于管理 延迟任务（Delayed Tasks） 的关键数据结构。它存储所有因调用 vTaskDelay() 或 vTaskDelayUntil() 而暂时挂起的任务，并在适当的时间重新激活它们；
 ### xDelayedTaskList2
 ### pxDelayedTaskList
 ### pxOverflowDelayedTaskList
+
 ### xPendingReadyList
+#### 定义
+#### 作用
+全局链表，用于在任务调度器挂起期间临时存储被中断接触阻塞的任务，确保任务状态变更的安全性；
+待调度器恢复时，从```xPendingReadyList```转移到就绪列表；
+
 ### 状态转换图
 ```mermaid
 graph TD
   A(就绪态) -->|任务切换| B(运行态)
+  C(待处理就绪态) -->|调度器恢复| A(就绪态)
 ```
 ## xTasksWaitingTermination
 ## uxDeletedTasksWaitingCleanUp
@@ -430,7 +440,39 @@ graph TD
 # xTaskResumeAll
 ## 参数
 ## 功能
+恢复被挂起的调度器，重新允许任务切换；
 ## 实现
+步骤 1： 如果配置单核或者（多核并且任务调度器运行中）：
+
+步骤 1.1：进入临界区：
+
+步骤 1.1.1：获取当前核ID；
+
+步骤 1.1.2：任务挂起调度计数-1；
+
+步骤 1.1.3：释放任务锁；
+
+步骤 1.1.4：如果任务挂起调度计数等于0：
+
+步骤 1.1.4.1：如果当前任务数大于0：
+
+步骤 1.1.4.2：如果待处理就绪列表任务不为空：
+
+步骤 1.1.4.2.1：取出链表第一个任务TCB;
+
+步骤 1.1.4.2.2：从事件链表移除元素；
+
+步骤 1.1.4.2.3：开启内存屏障；
+
+步骤 1.1.4.2.4：从状态链表移除任务；
+
+步骤 1.1.4.2.5：添加任务到就绪链表；
+
+步骤 1.1.4.2.6：如果单核 并且 任务优先级大于当前任务优先级：当前核延迟切换为True；
+
+步骤 1.1.4.3：如果任务TCB不为空：调用接口```prvResetNextTaskUnblockTime```
+
+
 
 # xTaskGetTickCount
 ## 参数
@@ -490,6 +532,7 @@ graph TD
 # vTaskStepTick
 ## 参数
 ## 功能
+手动步进系统 Tick 函数
 ## 实现
 
 # xTaskCatchUpTicks
@@ -802,8 +845,6 @@ graph TD
 ## 功能
 ## 实现
 
-# vTaskGetRunTimeStatistics
-
 # uxTaskResetEventItemValue
 
 # pvTaskIncrementMutexHeldCount
@@ -993,6 +1034,12 @@ mtimecmp`：是一个 64 位读写寄存器，用于设置下一次定时中断�
 ### 功能
 ### 实现
 ## ulTaskGetRunTimePercent
+
+## vTaskGetRunTimeStatistics
+### 参数
+### 功能
+用于获取系统中所有任务的 CPU 占用率、运行时间等关键性能数据；
+### 实现
 
 
 # 任务通知机制
