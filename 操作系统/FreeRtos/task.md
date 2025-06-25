@@ -1,11 +1,17 @@
 # 全局变量
-## pxCurrentTCB 或 pxCurrentTCBs
-## pxReadyTasksLists
-## xDelayedTaskList1
-## xDelayedTaskList2
-## pxDelayedTaskList
-## pxOverflowDelayedTaskList
-## xPendingReadyList
+## 状态
+### pxCurrentTCB 或 pxCurrentTCBs
+### pxReadyTasksLists
+### xDelayedTaskList1
+### xDelayedTaskList2
+### pxDelayedTaskList
+### pxOverflowDelayedTaskList
+### xPendingReadyList
+### 状态转换图
+```mermaid
+graph TD
+  A(就绪态) -->|任务切换| B(运行态)
+```
 ## xTasksWaitingTermination
 ## uxDeletedTasksWaitingCleanUp
 ## xSuspendedTaskList
