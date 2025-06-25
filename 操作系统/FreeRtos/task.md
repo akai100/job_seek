@@ -1,3 +1,29 @@
+# 全局变量
+## pxCurrentTCB 或 pxCurrentTCBs
+## pxReadyTasksLists
+## xDelayedTaskList1
+## xDelayedTaskList2
+## pxDelayedTaskList
+## pxOverflowDelayedTaskList
+## xPendingReadyList
+## xTasksWaitingTermination
+## uxDeletedTasksWaitingCleanUp
+## xSuspendedTaskList
+## uxCurrentNumberOfTasks
+## xTickCount
+## uxTopReadyPriority
+## xSchedulerRunning
+## xPendedTicks
+## xYieldPendings
+## xNumOfOverflows
+## uxTaskNumber
+## xNextTaskUnblockTime
+## xIdleTaskHandles
+## uxTopUsedPriority
+## uxSchedulerSuspended
+## ulTaskSwitchedInTime
+## ulTotalRunTime
+
 # prvYieldForTask
 ## 参数
 ## 功能
@@ -675,22 +701,112 @@
 # vTaskEnterCritical - 单核
 
 # vTaskEnterCritical - 多核
+## 参数
+## 功能
+## 实现
+步骤 1：调用```portDISABLE_INTERRUPTS```去使能中断；
+
+步骤 2：任务调度器运行中：
+
+步骤 2.1：调用```portGET_CRITICAL_NESTING_COUNT``获取临界区嵌套深度，如果深度等于0：
+
+步骤 2.1.1：获取任务锁；
+
+步骤 2.1.2：获取中断锁；
+
+步骤 2.2：调用```portINCREMENT_CRITICAL_NESTING_COUNT```接口增加临界区中断嵌套计数；
+
+步骤 2.3：调用```portGET_CRITICAL_NESTING_COUNT``获取临界区嵌套深度，如果深度等于1：
+
+步骤 2.3.1：如果
 
 # vTaskEnterCriticalFromISR
+## 参数
+## 功能
+## 实现
+步骤 1：任务调度器运行中：
 
-# vTaskExitCritical
+步骤 1.1：调用```portSET_INTERRUPT_MASK_FROM_ISR```禁止中断；
+
+步骤 1.2：如果当前嵌套深度等于0：调用```portGET_ISR_LOCK```获取中断锁；
+
+步骤 1.3：调用```portINCREMENT_CRITICAL_NESTING_COUNT```增加临界区嵌套计数；
+
+# vTaskExitCritical - 单核
+## 参数
+## 功能
+## 实现
+步骤 1：任务调度器运行中：
+
+步骤 1.1：当前任务TCB 临界区嵌套深度大于0：
+
+步骤 1.1.1：当前任务TCB 临界区嵌套深度等于0：调用```portENABLE_INTERRUPTS```使能中断；
+
+# vTaskExitCritical - 多核
+## 参数
+## 功能
+## 实现
+步骤 1：任务调度器运行中：
+
+步骤 1.1：当前嵌套深度大于0：
+
+步骤 1.1.1：调用```portDECREMENT_CRITICAL_NESTING_COUNT```接口递减嵌套深度
+
+步骤 1.1.2：如果当前嵌套深度等于0：
+
+步骤 1.1.2.1：调用```portRELEASE_ISR_LOCK```释放中断锁；
+
+步骤 1.1.2.2：调用```portRELEASE_TASK_LOCK```释放任务锁；
+
+步骤 1.1.2.3：调用```portENABLE_INTERRUPTS```使能中断；
+
+步骤 1.1.2.4：如果当前核不需要延迟调度：调用```portYIELD```让出CPU控制权；
+
 
 # vTaskExitCriticalFromISR
+## 参数
+## 功能
+## 实现
+步骤 1：任务调度器运行中：
+
+步骤 1.1：如嵌套深度大于0：
+
+步骤 1.1.1：调用```portDECREMENT_CRITICAL_NESTING_COUNT```接口递减嵌套深度；
+
+步骤 1.1.1.1：如果当前嵌套深度大于0：调用接口```portCLEAR_INTERRUPT_MASK_FROM_ISR```
 
 # prvWriteNameToBuffer
 
 # vTaskListTasks
+## 参数
+## 功能
+## 实现
 
 # vTaskGetRunTimeStatistics
 
 # uxTaskResetEventItemValue
 
 # pvTaskIncrementMutexHeldCount
+## 参数
+## 功能
+主要用于支持优先级继承机制（Priority Inheritance），解决互斥锁（Mutex）场景下的优先级反转问题；
+
+1. 核心作用
+（1）更新互斥锁持有计数
++ 当任务成功获取一个互斥锁（Mutex） 时调用此函数
++ 递增当前任务控制块（TCB）中的 uxMutexesHeld 计数器，记录该任务当前持有的互斥锁数量；
+（2）返回当前任务句柄
+
+2. 解决优先级翻转
+（1）低优先级（L）持有互斥锁
+（2）中优先级（M）强占CPU；
+（3）高优先级任务（H）申请同一互斥锁被阻塞；
+解决方案：
+
+## 实现
+步骤 1：获取当前任务；
+
+步骤 2：
 
 # xPortStartScheduler
 
@@ -1129,3 +1245,11 @@ FreeRTOS 的任务通知机制是一种轻量级、高效的任务间通信（IP
 
 步骤 3：退出临界区；
 
+```mermaid
+graph TD;
+    就绪态-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+    A-->B;
+```
