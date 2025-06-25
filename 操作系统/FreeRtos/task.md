@@ -548,7 +548,11 @@ graph TD
 # xTaskIncrementTick
 ## 参数
 ## 功能
+在每次系统 Tick 中断中被调用，负责管理时间相关的任务状态变更；
 ## 实现
+步骤 1：如果调度器挂起计数等于0：
+
+步骤 1.1：
 
 # vTaskSetApplicationTaskTag
 ## 参数
