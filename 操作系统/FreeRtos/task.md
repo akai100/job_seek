@@ -39,8 +39,15 @@ graph TD
 ## xIdleTaskHandles
 ## uxTopUsedPriority
 ## uxSchedulerSuspended
+
 ## ulTaskSwitchedInTime
+### 定义
+### 功能
+
 ## ulTotalRunTime
+### 定义
+### 功能
+用于统计系统的总运行时间。
 
 # prvYieldForTask
 ## 参数
@@ -189,6 +196,41 @@ graph TD
 ## 实现
 
 # prvAddNewTaskToReadyList-单核
+## 参数
+## 功能
+## 实现
+步骤 1：进入临界区：
+
+步骤 1.1：当前任务计数（```uxCurrentNumberOfTasks```）加一；
+
+步骤 1.2：如果当前任务为空：
+
+步骤 1.2.1：当前任务等于新添加的任务；
+
+步骤 1.3：否则（当前任务不为空）：
+
+步骤 1.3.1：如果任务调度器挂起中：
+
+步骤 1.3.1.1：如果当前任务优先级小于等于新加到就绪列表任务的优先级：
+
+步骤 1.3.1.1.1：当前任务等于新添加就绪任务；
+
+步骤 1.4：任务计数（```uxTaskNumber```）自增；
+
+步骤 1.5：如果启用“跟踪调试功能”：把任务计数赋值给任务TCB；
+
+步骤 1.6：调用```prvAddTaskToReadyList```添加任务到就绪列表；
+
+步骤 1.7：调用```portSETUP_TCB```对创建的任务的TCB进行硬件相关的初始化；
+
+步骤 2：退出临界区；
+
+步骤 3：如果任务调度器未挂起：
+
+步骤 3.1：调用```taskYIELD_ANY_CORE_IF_USING_PREEMPTION```发起任务强占；
+
+
+
 
 # prvAddNewTaskToReadyList-多核
 
