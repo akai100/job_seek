@@ -229,10 +229,31 @@ graph TD
 
 步骤 3.1：调用```taskYIELD_ANY_CORE_IF_USING_PREEMPTION```发起任务强占；
 
-
-
-
 # prvAddNewTaskToReadyList-多核
+## 参数
+## 功能
+## 实现
+步骤 1：进入临界区；
+
+步骤 1.1：当前当前任务计数（```uxCurrentNumberOfTasks```）++；
+
+步骤 1.2：如果调度器挂起：
+
+步骤 1.2.1：如果当前任务计数（```uxCurrentNumberOfTasks```）等于1：调用```prvInitialiseTaskLists```初始化全局链表；
+
+步骤 1.3：任务计数```uxTaskNumber```+ 1；
+
+步骤 1.4：如果启用“跟踪调试功能”：把任务计数赋值给任务TCB；
+
+步骤 1.5：调用```prvAddTaskToReadyList```添加任务到就绪列表；
+
+步骤 1.6：调用```portSETUP_TCB```对创建的任务的TCB进行硬件相关的初始化；
+
+步骤 1.7：如果任务调度器未挂起：
+
+步骤 1.7.1：调用```taskYIELD_ANY_CORE_IF_USING_PREEMPTION```发起任务强占；
+
+步骤 1.2：退出临界区；
 
 # vTaskDelete
 ## 参数
