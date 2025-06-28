@@ -39,3 +39,43 @@
 ### 功能
 ### 实现
 步骤 1：如果队列长度大于0并且
+
+# 发送数据
+## xQueueSendToFront
+## xQueueGenericSend
+### 实现
+步骤 1：无限循环：
+
+步骤 1.1：进入临界区
+
+步骤 1.2：当前队列消息数量小于队列容量或者强制写入：
+
+步骤 1.2.1：启用队列集合：
+
+步骤 1.2.1.1：调用接口```prvCopyDataToQueue```将数据安全复制到队列存储区；
+
+步骤 1.2.1.2：如果队列所属队列集合不为空：
+
+步骤 1.2.1.2.1：
+
+步骤 1.2.1.3：否则：
+
+步骤 1.2.1.3.1：如果队列因队列空而阻塞的待接收任务队列不为空：
+
+步骤 1.2.1.3.1.1：调用接口```xTaskRemoveFromEventList```将任务从事件等待列表(如队列、信号量的阻塞列表)中移除并重新调度；
+
+步骤 1.2.1.3.1.2：如果需要触发上下文切换：调用```queueYIELD_IF_USING_PREEMPTION```触发上下文切换；
+
+步骤 1.2.1.3.2：否则如果```prvCopyDataToQueue```接口返回需要上下文切换：调用```queueYIELD_IF_USING_PREEMPTION```触发上下文切换；
+
+步骤 1.2.2：退出临界区；
+
+步骤 1.3：否则
+
+
+# 互斥锁
+## xQueueCreateMutex
+## xQueueGetMutexHolder
+## xQueueGetMutexHolderFromISR
+
+
