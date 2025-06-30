@@ -102,6 +102,13 @@
 
 # 互斥锁
 ## xQueueCreateMutex
+### 参数
+
+### 实现
+步骤 1：调用```xQueueGenericCreate```创建长度为1，元素大小为0的队列；
+
+步骤 2：调用```prvInitialiseMutex``初始化队列
+
 ## xQueueGetMutexHolder
 ## xQueueGetMutexHolderFromISR
 
