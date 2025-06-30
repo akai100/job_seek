@@ -88,3 +88,26 @@ target_link_options(<target> [BEFORE]
 add_executable(my_app main.cpp)
 target_link_options(my_app PRIVATE "-Wl,-rpath,/usr/local/lib")  # Linux
 ```
+## set_target_properties
+用于为构建目标（如可执行文件、静态库或共享库）设置各种属性。
+### 语法
+```cmake
+set_target_properties(<target1> <target2> ...
+    PROPERTIES
+    <property1> <value1>
+    <property2> <value2>
+    ...
+)
+```
++ <target>：通过 add_executable() 或 add_library() 创建的目标名称；
++ PROPERTIES：固定关键字，后接属性键值对；
+### 举例
+```cmake
+add_library(my_shared SHARED src.cpp)
+set_target_properties(my_shared PROPERTIES
+    OUTPUT_NAME "engine"
+    PREFIX ""
+    SUFFIX ".so.1"
+    LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib"
+)
+```
