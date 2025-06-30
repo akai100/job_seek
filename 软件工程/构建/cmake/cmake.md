@@ -51,3 +51,40 @@ include_directories(include)
 ```cmake
 aux_source_directory(src SRC_LIST)
 ```
+## target_compile_options
+用于为特定目标（如可执行文件或库）设置编译器选项的命令。它可以控制编译过程中的优化级别、警告设置、语言标准等;
+```cmake
+target_compile_options(<target> 
+    [BEFORE] 
+    <INTERFACE|PUBLIC|PRIVATE> [items1...] 
+    [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
+```
++ <target>：要设置选项的目标（如通过 add_executable() 或 add_library() 创建的目标）;
++ PRIVATE|PUBLIC|INTERFACE：指定选项的可见性:
+  + PRIVATE：仅用于当前目标的编译;
+  + PUBLIC：用于当前目标及其依赖项；
+  + INTERFACE：仅传递给依赖此目标的其他目标；
++ BEFORE：将选项插入到现有选项之前（默认追加到末尾）；
+```cmake
+add_executable(my_app main.cpp)
+
+# 启用所有警告并视警告为错误（GCC/Clang）
+target_compile_options(my_app PRIVATE -Wall -Wextra -Werror)
+
+# MSVC 的等效选项
+target_compile_options(my_app PRIVATE /W4 /WX)
+```
+
+## target_link_options
+用于为可执行文件、共享库或模块库目标添加链接器选项（如 -Wl 标志、库路径等）。
+### 核心语法
+```cmake
+target_link_options(<target> [BEFORE]
+  <INTERFACE|PUBLIC|PRIVATE> [items1...]
+  [<INTERFACE|PUBLIC|PRIVATE> [items2...] ...])
+```
+### 举例
+```cmake
+add_executable(my_app main.cpp)
+target_link_options(my_app PRIVATE "-Wl,-rpath,/usr/local/lib")  # Linux
+```
