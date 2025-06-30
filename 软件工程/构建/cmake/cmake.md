@@ -262,3 +262,24 @@ include(FindOpenSSL)
 # 现代写法（CMake 3.0+）
 find_package(OpenSSL REQUIRED)  # 内部仍可能使用 include()
 ```
+
+### 拓展
+（1）错误处理
+```cmake
+include(optional_config.cmake OPTIONAL RESULT_VARIABLE loaded)
+if(NOT loaded)
+    message(STATUS "No optional config found")
+endif()
+```
+（2）防止错误包含
+```cmake
+if(NOT DEFINED MY_MODULE_LOADED)
+    include(my_module.cmake)
+    set(MY_MODULE_LOADED YES CACHE INTERNAL "Module loaded")
+endif()
+```
+### 对比
++ include()	          当前作用域	   加载脚本/模块	否
++ find_package()	    全局	       查找外部依赖	是（<Package>_FOUND）
++ add_subdirectory()	新建作用域	   引入子项目	否
+
