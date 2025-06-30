@@ -111,3 +111,93 @@ set_target_properties(my_shared PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib"
 )
 ```
+## add_custom_target
+用于创建不生成文件的自定义目标（例如：执行脚本、运行测试、生成文档等）.
+### 语法
+```cmake
+add_custom_target(Name [ALL]
+    [COMMAND command1 [args1...]]
+    [COMMAND command2 [args2...] ...]
+    [DEPENDS depend1 depend2 ...]
+    [WORKING_DIRECTORY dir]
+    [COMMENT "text"]
+    [VERBATIM]
+    [SOURCES src1 [src2...]]
+    [BYPRODUCTS files...]
+)
+```
++ Name	自定义目标的名称（可通过 make Name 或 ninja Name 执行）
++ ALL	将该目标添加到默认构建目标（即运行 make/ninja 时自动执行）
++ COMMAND	要执行的命令（可多组，按顺序执行）
++ DEPENDS	依赖的其他目标或文件（触发重建条件）
++ WORKING_DIRECTORY	命令执行的工作目录
++ COMMENT	构建时显示的提示信息
++ VERBATIM	禁止转义参数（推荐始终启用）
++ SOURCES	关联的源文件（IDE 中显示用）
++ BYPRODUCTS	声明命令生成的副产品（供 Ninja 等构建系统跟踪）
+
+### 举例
+```cmake
+add_custom_target(run_script
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/build_docs.py
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Generating API documentation..."
+)
+```
+## add_custom_command
+用于定义生成特定文件的定制规则。与 add_custom_target 不同，它直接关联到文件生成过程，会在依赖项变更时自动触发。
+### 语法
+```cmake
+add_custom_command(
+  OUTPUT output1 [output2...]
+  COMMAND command1 [args1...]
+  [COMMAND command2 [args2...] ...]
+  [DEPENDS depend1 depend2...]
+  [WORKING_DIRECTORY dir]
+  [COMMENT "text"]
+  [VERBATIM]
+  [BYPRODUCTS files...]
+)
+```
++ OUTPUT	指定生成的文件（必须绝对路径）
++ COMMAND	生成文件的命令（可多组顺序执行）
++ DEPENDS	依赖的文件/目标（触发重建条件）
++ TARGET	关联的目标（用于构建挂钩）
++ PRE_BUILD	在目标编译前执行（MSVC特有）
++ PRE_LINK	在编译后链接前执行
++ POST_BUILD	在目标构建完成后执行
++ BYPRODUCTS	Ninja构建系统需要的副产物声明
+### 举例
+```cmake
+# 生成Proto的C++文件
+add_custom_command(
+  OUTPUT ${PROTO_GEN_SRCS}
+  COMMAND protoc --cpp_out=${GEN_DIR} ${PROTO_FILE}
+  DEPENDS ${PROTO_FILE}
+  COMMENT "Generating C++ protobuf code"
+)
+
+# 将生成的源码加入库
+add_library(proto_lib ${PROTO_GEN_SRCS})
+```
+构建后处理（二进制打包）
+```cmake
+add_executable(my_app main.cpp)
+
+add_custom_command(
+  TARGET my_app POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E tar cfvz ${CMAKE_BINARY_DIR}/package.tgz $<TARGET_FILE:my_app>
+  COMMENT "Creating deployment package"
+)
+```
+自定义预处理
+```cmake
+add_custom_command(
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/processed.cpp
+  COMMAND ${PYTHON_EXECUTABLE} preprocess.py ${SRC} > ${CMAKE_CURRENT_BINARY_DIR}/processed.cpp
+  DEPENDS ${SRC} preprocess.py
+  VERBATIM
+)
+
+add_executable(app ${CMAKE_CURRENT_BINARY_DIR}/processed.cpp)
+```
