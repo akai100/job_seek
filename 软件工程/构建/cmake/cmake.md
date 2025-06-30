@@ -201,3 +201,64 @@ add_custom_command(
 
 add_executable(app ${CMAKE_CURRENT_BINARY_DIR}/processed.cpp)
 ```
+
+## list
+多功能命令，用于操作和管理列表变量。
+### 语法
+```cmake
+list(SUBCOMMAND <list> [args...])
+```
++ <list> 是变量名（无需 ${} 包裹）
++ SUBCOMMAND 指定操作类型（如 APPEND、INSERT 等）
+  + APPEND	追加元素	list(APPEND MY_LIST "new_item")
+  + INSERT	插入元素	list(INSERT MY_LIST 0 "first")
+  + REMOVE_ITEM	删除匹配项	list(REMOVE_ITEM MY_LIST "value")
+  + REMOVE_AT	按索引删除	list(REMOVE_AT MY_LIST 0)
+  + REMOVE_DUPLICATES	去重	list(REMOVE_DUPLICATES MY_LIST)
+  + FILTER	条件过滤	list(FILTER MY_LIST INCLUDE REGEX ".*\.cpp")
+  + LENGTH	获取长度	list(LENGTH MY_LIST len)
+  + GET	获取元素	list(GET MY_LIST 0 first_item)
+  + FIND	查找索引	list(FIND MY_LIST "value" index)
+  + JOIN	连接为字符串	list(JOIN MY_LIST ";" joined_str)
+  + SORT	排序（字母序）
+  + REVERSE	反转顺序
+
+### 用例
+```cmake
+set(SRC_LIST main.cpp util.hpp test.c)
+list(FILTER SRC_LIST INCLUDE REGEX ".*\.cpp$") 
+```
+## include
+用于加载并执行外部 CMake 脚本文件
+### 语法
+```cmake
+include(<file|module> [OPTIONAL] [RESULT_VARIABLE <var>] [NO_POLICY_SCOPE])
+```
++ <file|module>：可以是：
+  + 完整文件路径（.cmake 文件）
+  + 模块名（查找 CMAKE_MODULE_PATH 中的 Find<module>.cmake）
++ OPTIONAL：文件不存在时不报错
++ RESULT_VARIABLE：存储加载结果（成功时为路径，失败时为 NOTFOUND）
++ NO_POLICY_SCOPE：不继承调用者的策略设置
+
+### 举例
+(1)加载脚本文件
+```cmake
+# 加载同级目录的配置
+include(${CMAKE_CURRENT_SOURCE_DIR}/config.cmake)
+
+# 动态判断加载
+set(MY_FEATURE_ENABLED ON)
+if(MY_FEATURE_ENABLED)
+    include(feature_setup.cmake)
+endif()
+```
+
+(2) 使用 CMake 模块
+```cmake
+# 会从 CMAKE_MODULE_PATH 查找 FindOpenSSL.cmake
+include(FindOpenSSL)
+
+# 现代写法（CMake 3.0+）
+find_package(OpenSSL REQUIRED)  # 内部仍可能使用 include()
+```
