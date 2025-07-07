@@ -1,3 +1,25 @@
+常见定义：
+```C
+struct tcp_options_received {
+    int ts_recent_stamp;    
+    u32 ts_recent;
+    u32	rcv_tsval;
+    u32	rcv_tsecr;
+    u16 saw_tstamp : 1,     // 标记是否在SYN包中看到时间戳选项
+        tstamp_ok : 1,      // 是否最终启用时间戳功能（双方都支持）
+        dsack : 1,          // 是否支持重复SACK（RFC-2883）
+        wscale_ok : 1,      // 是否启用窗口缩放（RFC-1323）
+        sack_ok : 3,        // 是否启用选择性确认（RFC-2018）
+        smc_ok : 1,         // 
+        snd_wscale : 4,     // 发送窗口缩放因子（实际窗口大小 = 通告窗口 << snd_wscale）
+        rcv_wscale : 4;     // 接收窗口缩放因子
+    u8	saw_unknown:1,
+       unused:7;
+    u8	num_sacks;
+    u16	user_mss;           // 用户设置的MSS
+    u16	mss_clamp;          // 协商的MSS上限
+};
+```
  0                   1                   2                   3
  
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
