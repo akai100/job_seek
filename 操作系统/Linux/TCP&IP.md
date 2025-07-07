@@ -25,12 +25,15 @@ struct tcp_options_received {
 struct tcp_sock {
     __be32 pred_flags;
     u32 rcv_nxt;
+    u32 snd_nxt;
 };
 ```
 + pred_flags
   用于缓存某些频繁检查的 TCP 状态标志，使得内核在快速路径（Fast Path）处理时能 避免重复计算，提高性能。
 + rcv_nxt
   下一个期望接收的序列号；
++ snd_nxt
+  表示下一个要发送的序列号；
 
 ```mermaid
 flowchart TD
