@@ -30,6 +30,7 @@ struct tcp_sock {
 + pred_flags
   用于缓存某些频繁检查的 TCP 状态标志，使得内核在快速路径（Fast Path）处理时能 避免重复计算，提高性能。
 + rcv_nxt
+  下一个期望接收的序列号；
 
 ```mermaid
 flowchart TD
