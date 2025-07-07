@@ -20,6 +20,27 @@ struct tcp_options_received {
     u16	mss_clamp;          // 协商的MSS上限
 };
 ```
+
+```C
+struct tcp_sock {
+    __be32 pred_flags;
+    u32 rcv_nxt;
+};
+```
++ pred_flags
+  用于缓存某些频繁检查的 TCP 状态标志，使得内核在快速路径（Fast Path）处理时能 避免重复计算，提高性能。
++ rcv_nxt
+
+```mermaid
+flowchart TD
+    A[Start] --> B{TCP头状态标志位等于缓存?}
+    B -->|Yes| C[OK]
+    C --> D[Rethink]
+    D --> B
+    B ---->|No| E[End]
+
+```
+  
  0                   1                   2                   3
  
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
