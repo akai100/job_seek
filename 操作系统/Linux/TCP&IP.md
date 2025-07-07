@@ -25,15 +25,28 @@ struct tcp_options_received {
 struct tcp_sock {
     __be32 pred_flags;
     u32 rcv_nxt;
+    u32 rcv_wup;
     u32 snd_nxt;
+    u32 snd_una;
+    u32 lost;
 };
 ```
 + pred_flags
   用于缓存某些频繁检查的 TCP 状态标志，使得内核在快速路径（Fast Path）处理时能 避免重复计算，提高性能。
 + rcv_nxt
   下一个期望接收的序列号；
++ rcv_wup
+  表示最后一次发送窗口更新（Window Update）时的接收序列号。主要功能：
+  + 延迟窗口更新：避免频繁发送窗口更新（ACK + Window Update）;
+  + 与 rcv_nxt 配合，确保窗口更新仅在接收数据后触发；
+  + 防止窗口死锁：在特定场景下（如零窗口探测）恢复通信；
 + snd_nxt
   表示下一个要发送的序列号；
++ snd_una
+  表示发送方最早未被确认的序列号;
++ lost
+  表示已标记为丢失但尚未重传的数据包数量。
+
 
 ```mermaid
 flowchart TD
