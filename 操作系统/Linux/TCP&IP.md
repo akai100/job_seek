@@ -50,11 +50,13 @@ struct tcp_sock {
 
 ```mermaid
 flowchart TD
-    A[Start] --> B{TCP头状态标志位等于缓存?}
+    A[tcp_v4_rcv] --> B{TIME_WAIT?}
     B -->|Yes| C[OK]
     C --> D[Rethink]
     D --> B
-    B ---->|No| E[End]
+    B ---->|No| E{NEW_SYN_RECV?}
+    F -->|Yes| G[ok]
+
 
 ```
   
@@ -110,3 +112,6 @@ stateDiagram-v2
     Crash --> [*]
 
 ```
+## tcp_timewait_state_process
+步骤 1：子状态为 TCP_FIN_WAIT2 态：
+
