@@ -251,6 +251,7 @@ stateDiagram-v2
 
 步骤 2：调用```__inet_lookup_skb```获取数据包对应的socket;
 
+
 步骤 3：如果对应socket状态为TIME_WAIT状态：
 
 步骤 3.1：调用```xfrm4_policy_check```校验IPV4数据包的IPsec策略，校验失败：
@@ -267,11 +268,14 @@ stateDiagram-v2
 
 步骤 3.7：否则如果返回为RST（需要发送RST响应）：
 
+
 步骤 4：如果socket状态为NEW_SYN_RECV态：
 
 步骤 4.1：如果调用```xfrm4_policy_check```校验IPV4数据包的IPsec策略，校验失败：设置丢弃原因；
 
 步骤 4.2：调用```tcp_inbound_hash```接口
+
+步骤 4.3：如果
 
 
 ## tcp_timewait_state_process
