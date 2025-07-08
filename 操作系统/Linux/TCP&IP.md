@@ -182,6 +182,70 @@ stateDiagram-v2
 
 
 步骤 1：
+
+## tcp_rcv_state_process
+步骤 1：如果socket状态为```TCP_CLOSE```：
+
+
+步骤 2：如果socket状态为```TCP_LISTEN```：
+
+步骤 2.1：如果接收数据包TCP头ACK字段有效：返回1；
+
+步骤 2.2：如果接收数据包TCP头RST标志位有效：
+
+步骤 2.2.1：设置丢弃原因```TCP_RESET```;
+
+步骤 2.2.2：跳转到步骤；
+
+步骤 2.3：如果接收数据包TCP头SYN字段有效：
+
+步骤 2.3.1：如果接收数据包TCP头FIN字段有效：设置丢包原因```TCP_FLAGS```，跳转到步骤
+
+步骤 2.3.2：调用```dccp_v4_conn_request```接口，返回是否接收；
+
+步骤 2.3.3：如果没有接收返回1；
+
+步骤 2.3.4：调用```consume_skb```，返回0；
+
+步骤 2.4：否则：设置丢包原因```TCP_FLAGS```，跳转到步骤
+
+
+步骤 3：如果socket状态为```TCP_SYN_SENT```
+
+
+步骤 ：调用```tcp_drop_reason```;
+
+步骤 ：返回0，结束；
+
+
+## tcp_v4_do_rcv
+步骤 1：如果Socket状态为```TCP_ESTABLISHED```态；
+
+步骤 1.1：调用```sock_rps_save_rxhash```保存接收哈希值以支持高效的负载均衡;
+
+步骤 1.2：调用```sk_mark_napi_id```多队列网卡环境下优化数据包处理性能；
+
+步骤 1.3：如果
+
+步骤 1.4：调用```tcp_rcv_established```;
+
+步骤 2：调用```tcp_checksum_complete```，校验失败：
+
+步骤 3：如果socket状态为```TCP_LISTEN```：
+
+步骤 3.1：调用```tcp_v4_cookie_check``` TCP SYN Cookie 验证；
+
+步骤 3.2：如果返回sock为空：丢弃报文
+
+步骤 3.3：如果返回sock不等于当前sock:
+
+步骤 3.4.1：调用```tcp_child_process```
+
+步骤 4：否则：调用```sock_rps_save_rxhash```
+
+步骤 5：调用```tcp_rcv_state_process```
+
+
 ## tcp_v4_rcv
 步骤 1：调用```inet_sdif```获取确定接收数据包的输入网络设备索引；
 
@@ -203,7 +267,14 @@ stateDiagram-v2
 
 步骤 3.7：否则如果返回为RST（需要发送RST响应）：
 
+步骤 4：如果socket状态为NEW_SYN_RECV态：
+
+步骤 4.1：如果调用```xfrm4_policy_check```校验IPV4数据包的IPsec策略，校验失败：设置丢弃原因；
+
+步骤 4.2：调用```tcp_inbound_hash```接口
+
 
 ## tcp_timewait_state_process
 步骤 1：子状态为 TCP_FIN_WAIT2 态：
+
 
