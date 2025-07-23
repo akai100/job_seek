@@ -88,3 +88,18 @@ graph TD
     X --> M
     Y --> M
 ```
+### 保活报文
+```mermaid
+graph TD
+    A[tcp_xmit_probe_skb]
+    B[alloc_skb]
+    C[tcp_init_nondata_skb]
+    D[tcp_transmit_skb]
+    A -->|分配MAX_TCP_HEADER| B
+    B -->|设置序列号/ACK| C
+    C --> D
+```
++ 报文不带数据；
++ 报文序列号为最后一个已确认数据序列号；
++ ACK序列号有效
+
