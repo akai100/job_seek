@@ -30,7 +30,7 @@ graph TD
     O{超时}
     P[tcp_enter_loss]
     Q[tcp_update_rto_stats]
-    R[tcp_retransmit_skb
+    R[tcp_retransmit_skb]
 
     M{socket状态为ESTABLISHED}
 
