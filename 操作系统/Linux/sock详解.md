@@ -28,6 +28,21 @@ struct tcp_sock {
     u32	segs_in;
     u32	data_segs_in;
     u32	rcv_nxt;
+    u32	copied_seq;
+    u32	rcv_wup;
+    u32	snd_nxt;
+    u32	segs_out;
+    u32	data_segs_out;
+    u64	bytes_sent;
+    u64	bytes_acked;
+    u32	dsack_dups;
+    u32	snd_una;
+    u32	snd_sml;
+    u32	rcv_tstamp;
+    u32	lsndtime;
+    u32	last_oow_ack_time;
+    u32	compressed_ack_rcv_nxt;
+    u32	tsoffset;
     u32 max_window;
 }
 ```
