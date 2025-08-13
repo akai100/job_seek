@@ -13,6 +13,8 @@ graph TD
     G[sk_reset_timer]
     H{FIN_WAIT1}
     I[tcp_set_keepalive]
+    J[__tcp_close]
+    K{FIN_WAIT2?}
     A --> B
     B --> C
     C -->|是| D
@@ -22,6 +24,8 @@ graph TD
     C -->|否| H
     H -->|是| F
     I --> F
+    J --> K
+    K -->|是| F
 ```
 
 ### 保活定时器
