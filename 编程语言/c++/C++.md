@@ -46,6 +46,9 @@ B123 --> B1231(指向用来调用成员函数的对象)
 B12 --> B124(对象数组)
 
     A --> D(C++ 11)
-    D1(auto & decltype)
-D --> D1
+    D --> D1(auto & decltype)
+    D1 --> D2(auto)
+    D2 --> D3(auto 基于变量的初始化表达式推导类型，会忽略表达式的顶层const和引用)
+    D1 --> D4(decltype)
+    D4 --> 
 ```
