@@ -13,4 +13,9 @@ classDiagram
         + void Finish(R* msg, grpc::Status* status, void* tag)
     }
     ClientAsyncResponseReaderInterface <|-- ClientAsyncResponseReader
+    class GrpcLibrary {
+        
+    }
+    class ChannelCredentials {
+    }
 ```
