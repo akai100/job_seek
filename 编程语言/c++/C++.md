@@ -4,8 +4,22 @@ graph LR
 
     %% 基础语法
     A --> B(基础语法)
-    B --> B1
+    B --> Func("函数")
+Func --> InlineFunc("内联函数")
+Func --> FuncTemp("函数模板")
+    FuncTemp --> FuncTemp1("语法")
+        FuncTemp1 --> FuncTemp2("template <class T>")
+        FuncTemp1 --> FuncTemp3("template <typename T>")
+    FuncTemp --> FuncTemp4("class和typename差异")
+        FuncTemp4 --> FuncTemp5("选择建议")
+            FuncTemp5 --> FuncTemp6("class常见于旧代码（历史遗留习惯）")
+            FuncTemp5 --> FuncTemp7("typename 更直观，明确表示“类型名”（推荐使用）")
+         FuncTemp4 --> FuncTemp9("嵌套类型必须使用 typename")
+            FuncTemp9 --> FuncTemp10("template<class T> void print(const T& cntainer)")
+         FuncTemp4 --> FuncTemp11("模板模板参数仅支持class")
+            FuncTemp11 --> FuncTemp12("template <template <typename Elem> class Container>")
 
+    B --> B1
     B1(类和对象)
     B1 --> B11
     B11(面向对象)
