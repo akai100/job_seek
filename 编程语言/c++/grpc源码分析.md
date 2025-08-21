@@ -18,4 +18,14 @@ classDiagram
     }
     class ChannelCredentials {
     }
+    class ServerBuilder {
+        + ServerBuilder& AddListeningPort(const std::string& addr_uri, std::shared_ptr<grpc::ServerCredentials> creds, int* selected_port = nullptr)
+        + ServerBuilder& RegisterService(const std::string& host, grpc::Service* service)
+        + std::unique_ptr<grpc::Server> BuildAndStart()
+    }
+    class CallHook {
+        + void PerformOpsOnCall(CallOpSetInterface* ops, Call* call) virtual = 0
+    }
+    class ServerInterface {
+    }
 ```
