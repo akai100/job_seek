@@ -28,4 +28,8 @@ classDiagram
     }
     class ServerInterface {
     }
+    class grpc::Service {
+        + ServerInterface* server_
+        + bool has_async_methods()
+    }
 ```
