@@ -19,6 +19,7 @@ classDiagram
     class ChannelCredentials {
     }
     class ServerBuilder {
+        - int max_receive_message_size_;
         + ServerBuilder& AddListeningPort(const std::string& addr_uri, std::shared_ptr<grpc::ServerCredentials> creds, int* selected_port = nullptr)
         + ServerBuilder& RegisterService(const std::string& host, grpc::Service* service)
         + std::unique_ptr<grpc::Server> BuildAndStart()
@@ -28,7 +29,7 @@ classDiagram
     }
     class ServerInterface {
     }
-    class grpc::Service {
+    class Service {
         + ServerInterface* server_
         + bool has_async_methods()
     }
