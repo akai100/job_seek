@@ -1,46 +1,61 @@
 ```mermaid
-graph LR
-    A(C++)
+mindmap
+C++
+    基础语法
+        函数
+            内联函数
+            函数模板
+                语法
+                    template <class T>
+                    template <typename T>
+                class和typename差异
+                    选择建议
+                        class常见于旧代码（历史遗留习惯）
+                        typename 更直观，明确表示“类型名”（推荐使用）
+                        嵌套类型必须使用 typename
+                            template<class T> void print(const T& cntainer)
+                        模板模板参数仅支持class
+                            template <template <typename Elem> class Container>
+                显示具体化
+                    第三代具体化
+                        对于给定的函数名，可以有非模板函数、模板函数和显示具体化模板函数以及它们的重载版本
+                        显示具体化的原型和定义应以template<>打头，并通过名称来指出类型
+                        具体化将覆盖常规模板，而非模板函数将覆盖具体化和常规模板
+                实例化和具体化
+                    隐式实例化
+                        通过函数参数类型生成
+                    显示实例化
 
-    %% 基础语法
-    A --> B(基础语法)
-    B --> Func("函数")
-Func --> InlineFunc("内联函数")
-Func --> FuncTemp("函数模板")
-    FuncTemp --> FuncTemp1("语法")
-        FuncTemp1 --> FuncTemp2("template <class T>")
-        FuncTemp1 --> FuncTemp3("template <typename T>")
-    FuncTemp --> FuncTemp4("class和typename差异")
-        FuncTemp4 --> FuncTemp5("选择建议")
-            FuncTemp5 --> FuncTemp6("class常见于旧代码（历史遗留习惯）")
-            FuncTemp5 --> FuncTemp7("typename 更直观，明确表示“类型名”（推荐使用）")
-         FuncTemp4 --> FuncTemp9("嵌套类型必须使用 typename")
-            FuncTemp9 --> FuncTemp10("template<class T> void print(const T& cntainer)")
-         FuncTemp4 --> FuncTemp11("模板模板参数仅支持class")
-            FuncTemp11 --> FuncTemp12("template <template <typename Elem> class Container>")
-    FuncTemp --> FuncTemp13("显示具体化")
-        FuncTemp13 --> FuncTemp14("第三代具体化")
-            FuncTemp14 --> FuncTemp15("对于给定的函数名，可以有非模板函数、模板函数和显示具体化模板函数以及它们的重载版本")
-            FuncTemp14 --> FuncTemp16("显示具体化的原型和定义应以template<>打头，并通过名称来指出类型")
-            FuncTemp14 --> FuncTemp17("具体化将覆盖常规模板，而非模板函数将覆盖具体化和常规模板")
-    FuncTemp --> FuncTemp18("实例化和具体化")
-        FuncTemp18 --> FuncTemp19("隐式实例化")
-            FuncTemp19 --> FuncTemp20("通过函数参数类型生成")
-         FuncTemp18 --> FuncTemp21("显示实例化")
+        内存模型和名称空间
+            存储持续性、作用域和链接性
+                作用域和链接
+                    链接性描述了名称如何在不同单元间共享，链接性为外部的名称可在文件间共享，链接性为内部的名称只能由一个文件中的函数共享
+                自动存储持续性
+                    自动变量的初始化
+                    自动变量和堆栈
+            寄存器变量
+                通过使用CPU寄存器而不是堆栈来处理特定的变量，从而提供对变量的快速访问
+            静态持续变量
+                在整个程序执行期间存在
+                编译器分配固定的内存块来存储所有的静态变量
 
-B --> M("内存模型和名称空间")
-    M --> M1("存储持续性、作用域和链接性")
-        M1 --> M2("作用域和链接")
-            M2 --> M4("链接性描述了名称如何在不同单元间共享，链接性为外部的名称可在文件间共享，链接性为内部的名称只能由一个文件中的函数共享")
-        M1 --> M3("自动存储持续性")
-            M3 --> M5("自动变量的初始化")
-            M3 --> M6("自动变量和堆栈")
-                M6 --> M7("TMP")
-            M3 --> M8("寄存器变量")
-                M8 --> M9("通过使用CPU寄存器而不是堆栈来处理特定的变量，从而提供对变量的快速访问")
-        M1 --> M10("静态持续变量")
-            M10 --> M11("在整个程序执行期间存在")
-            M10 --> M12("编译器分配固定的内存块来存储所有的静态变量")
+    C++ 11
+        auto & decltype
+            auto
+                auto 基于变量的初始化表达式推导类型，会忽略表达式的顶层const和引用
+            decltype
+                decltype 基于给定表达式的完整类型推导，保留顶层const和引用
+            差异
+                auto必须待初始化器（否则无法推导类型）
+                decltype无需初始化器，可直接声明变量"
+        范围for循环
+            初始化列表
+                提供了一种简洁、灵活的语法来初始化数组、容器、结构体等复杂数据结构
+            语法
+                ["初始化数组: int arr\[] = {1, 2, 3, 4, 5};"]
+                ["初始化容器：std::vector<int> vec = {1, 2, 3, 4, 5};"]
+                ["初始化结构体：Point p = {10, 20};"]
+```
 
     B --> B1
     B1(类和对象)
@@ -183,25 +198,6 @@ B --> B76("string类")
     B76 --> B77("构造字符串")
     B76 --> B78("STL")
         B78 --> B79("vector模板类")
-
-
-    A --> D(C++ 11)
-    D --> D1(auto & decltype)
-    D1 --> D2(auto)
-    D2 --> D3(auto 基于变量的初始化表达式推导类型，会忽略表达式的顶层const和引用)
-    D1 --> D4(decltype)
-    D4 --> D5(decltype 基于给定表达式的完整类型推导，保留顶层const和引用)
-    D1 --> D6(差异)
-    D6 --> D7("auto必须待初始化器（否则无法推导类型）")
-    D6 --> D8("decltype无需初始化器，可直接声明变量")
-
-D --> D9(范围for循环)
-D --> D10(初始化列表)
-D10 --> D11(提供了一种简洁、灵活的语法来初始化数组、容器、结构体等复杂数据结构)
-D10 --> D12(语法)
-D12 --> D13("初始化数组: int arr[] = {1, 2, 3, 4, 5};")
-D12 --> D14("初始化容器：std::vector<int> vec = {1, 2, 3, 4, 5};")
-D12 --> D15("初始化结构体：Point p = {10, 20};")
 
 D --> D16(nullptr)
 D16 --> D17(作用)
