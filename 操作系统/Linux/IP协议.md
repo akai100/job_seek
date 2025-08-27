@@ -37,5 +37,29 @@
 + 选项
 
 ### 1.1.2 地址管理
-### 1.1.3 路由基础
+### 1.1.3 路径MTU发现
+路径MTU发现用于发现封包传输至指定目的地地址而不用被分段的最大尺寸。
+
+路径MTU 功能配置：
+
++ IP_PMTUDISC_DONT
   
+  绝不使用报文头中设定了 DF 标志的IP封包，因此，不使用路径MTU发现功能；
++ IP_PMTUDISC_DO
+  
+  总是在本地节点所产生的封包的报文头中设定 DF 标志，试图在每次传输时都找出最佳的PMTU；
++ IP_PMTUDISC_WANT
+  
+  按每条路径决定是否使用路径MTU发现功能。这是默认行为。
+
+开启路径MTU发现功能，下面两种情况可能锁定PMTU, 无法被更改：
+
++ ip route 添加时，通过关键字 lock 锁定MTU
+  
+  ```ip route add 10.10.1.0/24 via 100.100.100.1 mtu lock 750```
+
++ 收到 ICMP FRAGMENTATION NEEDED 消息使得你要用的PMTU小于最小容许值，则PMTU会设成最小值，然后锁住。
+  ```/proc/net/ipv4/route/min_pmtu```
+
+## 1.2 路由基础
+
