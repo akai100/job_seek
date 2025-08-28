@@ -49,4 +49,130 @@ public:
 
 #### 2.1.2 带有默认构造函数的基类
 
+同样的，如果一个没有任何构造函数的类派生自一个带有默认构造函数的基类，那么这个派生类的默认构造函数就是有用的。
+
+这个生成的默认构造函数会调用基类的默认构造函数（根据它们的声明次序）。
+
 #### 2.1.3 带有一个虚函数的类
+
+下面两种情况，也会生成默认构造函数：
+
+1. class 声明（或继承）一个**虚函数**；
+2. class 派生自一个继承串链，其中有一个或更多的**虚拟基类**
+```C++
+class Widget {
+public:
+    virtual void flip() = 0;
+};
+
+class Bell : public Widget {
+public:
+    virtual void flip() {}
+};
+
+class Whistle : public Widget {
+public:
+    virtual void flip() {}
+};
+```
+编译期间两个操作：
+1. 产生 vtbl
+2. 产生 vptr
+
+为了初始化 vptr, 需要生成默认构造函数，并初始化 vptr。
+
+#### 2.1.4 带有一个虚基类的类
+
+**虚基类** 的实现法在不同的编译器之间有极大的差异。但是有一个共同点：必须使**虚基类**在每一个**派生类**中的位置能够在执行期准备妥当。
+
+```C++
+class X { public: int i; };
+class A : public virtual X { public: int j; };
+class B : public virtual X { public: double d; };
+class C : public A, public B { public: int k; };
+
+void fool(const A* pa) { pa->i = 1024; }
+```
+```cfont```的实现通过引用或指针指向**虚基类**，对**虚基类**的操作通相关指针完成。为此需要一个默认构造函数。
+
+### 2.2 拷贝构造函数的建构操作
+
+用一个对象去初始化另一个对象，有三种情况：
+（1）直接赋值
+```C++
+X xx = x;
+```
+（2）作为函数参数
+```C++
+foo(xx)
+```
+（3）作为函数返回值
+```C++
+foo_bar()
+{
+    ......
+    return xx;
+}
+```
+拷贝构造函数：
+```C++
+X::X(const X& x);
+```
+当用一个对象初始化另一个对象时，通常都会调用拷贝构造函数。
+
+#### 2.2.1 默认成员初始化
+
+如果一个类没有显示声明拷贝构造函数，
+
+#### 2.2.2 位逐次拷贝
+
+如果一个类的声明符合**默认复制语义**，那么它就不需要复制构造函数：
+```C++
+class Word {
+private:
+    int cnt;
+    char *str;
+};
+```
+#### 2.2.3 不要位逐次拷贝
+
+不符合**默认复制语义**的四种情况：
+
+1. 内部成员对象所在类声明了**复制构造函数**
+2. 当继承的基类存在**复制构造函数**
+3. 声明了一个或多个**虚拟函数**
+4. 存在**虚拟基类**
+
+#### 2.2.4 重新设定**虚函数表**的指针
+
+因为存在```vptr```，拷贝构造函数需要考虑如何对```vptr```进行初始化。
+```C++
+class ZooAnimal {
+public:
+    virtual void draw();
+};
+
+class Bear : public ZooAnimal {
+public:
+    virtual void draw();
+};
+void foo()
+{
+    Bear yogi;
+    Bear winnie = yogi;    // 安全
+
+    ZooAnimal franny = yogi;    // 发生切割行为
+    franny.draw();              // 调用ZooAnial::draw();
+}
+```
+
+#### 2.2.5 处理虚拟类子对象
+
+### 2.3 程序转化语意学
+
+#### 2.3.1 明确的初始化操作
+
+#### 2.3.2 参数的初始化
+
+
+
