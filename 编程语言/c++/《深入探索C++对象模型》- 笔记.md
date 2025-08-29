@@ -174,5 +174,21 @@ void foo()
 
 #### 2.3.2 参数的初始化
 
+## 3. Data 语意学
 
+```C++
+class X {};
+class Y : public virtual X {}
+class Z : public virtual X {}
+class A : public Y, public Z {}
+```
++ ```sizeof(X)```的结果为 1
+  X 并不是空的，它有一个隐晦的 1byte，那是被编译器安插进去的一个```char```，使得它的每个对象在内存中都有独一无二的地址；
++ ```sizeof(Z)```和```sizeof(Y)```的结果为 8
+  (1) 对```虚基类的支持```，在对象内部需要一个指针指向表格
+  (2)
+
+  ### 3.1 Data Member 的绑定
+
+  
 
