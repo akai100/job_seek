@@ -286,3 +286,17 @@ endif()
 + find_package()	    全局	       查找外部依赖	是（<Package>_FOUND）
 + add_subdirectory()	新建作用域	   引入子项目	否
 
+## option
+
+## if
+
+```cmake
+if(condition)
+    # 条件成立时执行
+elseif(condition2)
+    # 分支条件
+else()
+    # 默认逻辑
+endif()
+```
+
