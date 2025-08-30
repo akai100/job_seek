@@ -299,4 +299,27 @@ else()
     # 默认逻辑
 endif()
 ```
-
+### 条件类型
++ 变量检查
+  ```cmake
+  if (DEFINED var)    # 检查变量是否定义
+  if (var)            # 若变量已定义且值为非空、非0、ON、YES、TRUE时成立
+  ```
++ 字符串比较
+  ```cmake
+  if(var STREQUAL "value")
+  if(CMAE_CXX_COMPILER_ID MATCH "GUN")
+  ```
++ 数值比较：LESS/GREATER/EQUAL
+  ```cmake
+  if(${A} LESS 10)
+  ```
++ 文件与目录
+  ```cmake
+  if(EXISTS path/to/file) # 检查文件/目录存在性
+  if(IS_DIRECTORY dir)    # 验证是否为目录
+  ```
++ 布尔逻辑（AND/OR/NOT）
+  ```cmake
+  if(WIN32 AND NOT MINGW)
+  ```
