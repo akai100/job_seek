@@ -98,6 +98,7 @@ void fool(const A* pa) { pa->i = 1024; }
 ### 2.2 拷贝构造函数的建构操作
 
 用一个对象去初始化另一个对象，有三种情况：
+
 （1）直接赋值
 ```C++
 X xx = x;
@@ -188,7 +189,66 @@ class A : public Y, public Z {}
   (1) 对```虚基类的支持```，在对象内部需要一个指针指向表格
   (2)
 
-  ### 3.1 Data Member 的绑定
+### 3.1 Data Member 的绑定
+
+### 3.2 Data Member 的布局
+
+非静态数据成员在类对象中的排列顺序将和其被声明的顺序一样。
+
+C++ 标准要求，在同一个 access section中，成员的排列只需符合“较晚出现的成员在类对象中较高的地址”这一条件即可（意味着不一定连续排列）。
+
+C++ 标准 也允许编译器将多个 access sections 之中的 data members 自由排列，不必在乎它们出现在 class 声明中的次序。
+
+```C++
+template<class class_ype,
+         class data_type1,
+         class data_type2>
+char* access_order(data_type1 class_type::*mem1, data_type2 class_type::*mem2)
+{
+    ......
+}
+
+access_order(&Point3d::z, &Point3d::y);
+```
+
+### 3.3 Data Member 的存取
+
+```C++
+Point3D origin, *pt = &origin;
+// 存取数据成员
+origin.x = 0.0;
+pt-> x = 0.0;
+```
+差异？
+
+### 3.3.1 静态数据成员
+
+静态数据成员的存取以及与class的关联，并不会导致任何空间上或执行时间上的额外负担。
+
+## 3.4 “继承” 与 Data Member
+
+### 3.4.1 只要继承不要多态
+
+### 3.4.2 加上多态
+
+### 3.4.3 多重继承
+
+### 3.4.4 虚拟继承
+
+空间和存取时间的额外负担：
+
++ vtable + type_info(用以支持 RTTI)
++ 每个对象新增vptr
++ 加强 constructor，设定 vptr 初值；
++ 加强 destructor，
+
+
+
+
+
+
+
+
 
   
 
