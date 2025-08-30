@@ -30,10 +30,13 @@ target_link_libraries(MyExecutable MyLibrary)
 set(CMAKE_CXX_STANDARD 11)
 ```
 
-# #target_include_directories(TARGET target_name
+## target_include_directories
+```
+target_include_directories(TARGET target_name
                           [BEFORE | AFTER]
                           [SYSTEM] [PUBLIC | PRIVATE | INTERFACE]
                           [items1...])
+```
             
 ## add_definitions
 
