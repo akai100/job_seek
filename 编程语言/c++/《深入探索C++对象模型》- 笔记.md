@@ -269,7 +269,7 @@ float Point3d::*p2 = &Point3d::x;
 ### 3.6.1 指向 Members 的指针的效率问题
 
 
-# Function 语意学
+## 4. Function 语意学
 
 
 
