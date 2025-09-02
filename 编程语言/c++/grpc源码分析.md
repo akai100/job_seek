@@ -34,6 +34,7 @@ classDiagram
         - grpc_atm avalanches_in_flight_
         - grpc::internal::Mutex server_list_mutex_
         - std::list<const grpc::Server*> server_list_
+        + bool Next(void** tag, bool* ok);
     }
     GrpcLibrary <|-- CompletionQueue
 ```
