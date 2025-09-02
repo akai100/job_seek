@@ -279,6 +279,78 @@ C++ 支持三种类型的**成员函数**: **静态成员函数**、**非静态�
 
 C++11的设计准则之一就是：非静态成员函数至少和一般的非成员函数有相同的效率。
 
+转化步骤：
+
+1. 添加```this```指针参数，如果成员函数是```const```，则参数也是const
+   ```C++
+   Point3d::magnitude(Point3d *const this)
+   const成员函数
+   Point3d::magnitude(const Point3d *const this)
+   ```
+2. 对非静态数据成员的存取操作通过```this```指针存取
+
+3. 对函数进行重命名
+
+##### 4.1.1.1 名称的特殊处理
+
+#### 4.1.2 虚拟成员函数
+
+#### 4.1.3 静态成员函数
+
+对**静态成员函数**取址，其地址的类型为非成员函数指针而不是指向成员函数的指针，例如：
+```C++
+&Point3d::object_count();
+其类型为:
+unsigned int (*)();
+而不是：
+unsigned int (Point3d::*)();
+```
+
+### 4.2 虚拟成员函数
+
+#### 4.2.1 多重继承下的虚函数
+
+```C++
+class Base1 {};
+class Base2 {};
+class Derived : public Base1, public Base2 {};
+```
+
+```Derived```支持虚函数，主要取决于```Base2```对象上，
+
+```C++
+Base2 *pbase2 = new Derived;
+```
+需要pbase2指向 Base2 对象，编译时期产生的代码如下：
+
+```C++
+Derived *temp = new Derived;
+Base2 *pbase2 = temp ? temp + sizeof(Base1) : 0;
+```
+
+当删除pbase2指针时，指针必须再一次调整，指向```Derived```对下的起始处。但是offset无法再编译时期直接设定，因为```pbase2```所
+指的真正对象只有在执行期才能确定。
+
+
+Thunk 技术：
+（1）以适当的offset值调整this指针
+（2）跳到虚函数去
+
+Thunk 技术运行虚函数表表项包含一个简单的指针，因此多重继承不需要任何空间上的额外负担，表项中的地址可以直接指向虚函数，也可以
+
+指向一个相关的 thunk（如果需要调整 this 指针）。
+
+#### 4.2.2 虚拟继承下的虚函数
+
+### 4.3 函数的效能
+
+### 4.4 指向成员函数的指针
+
+
+
+
+
+
 
 
 
