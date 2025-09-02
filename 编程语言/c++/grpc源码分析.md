@@ -20,3 +20,20 @@ classDiagram
         + Call CreateCall(const RpcMethod&, ...)
     }
 ```
+
+## CompletionQueue
+```mermaid
+classDiagram
+    class GrpcLibrary {
+        - bool grpc_init_called_
+        + GrpcLibrary(bool)
+        + ~GrpcLibrary()
+    }
+    class CompletionQueue {
+        - grpc_completion_queue* cq_
+        - grpc_atm avalanches_in_flight_
+        - grpc::internal::Mutex server_list_mutex_
+        - std::list<const grpc::Server*> server_list_
+    }
+    GrpcLibrary <|-- CompletionQueue
+```
