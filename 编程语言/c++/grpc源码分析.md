@@ -24,6 +24,14 @@ classDiagram
     }
     CompletionQueueTag <|-- CallOpSetInterface
     Call <.. CallOpSetInterface
+    class grpc_arg {
+        + grpc_arg_type type
+        + char *key
+    }
+    class grpc_channel_args {
+        + size_t num_args
+        + grpc_arg *args
+    }
     class grpc_call {
     }
     class RpcMethod {
@@ -32,6 +40,10 @@ classDiagram
         - RpcType method_type_
         - void* const channel_tag_
     }
+    class ChannelArguments {
+        - std::vector~grpc_arg~ args_
+        - std::list~std::string> strings_
+    }
     class ChannelCredentials {
         - grpc_channel_credentials *const c_creds_
         - CreateChannelImpl(const grpc::string &target, const ChannelArguments &args) : std::shared_ptr<Channel>
@@ -39,6 +51,10 @@ classDiagram
     }
     GrpcLibrary <|-- ChannelCredentials
     Channel <.. ChannelCredentials
+    class InsecureChannelCredentialsImpl {
+    }
+    ChannelCredentials <|-- InsecureChannelCredentialsImpl
+
     class CallHook {
         + PerformOpsOnCall(CallOpSetInterface *ops, Call *call)
     }
@@ -108,20 +124,7 @@ classDiagram
     CallOpSendMessage <|-- CallOpSet~CallOpSendInitialMetadata, CallOpSendMessage, CallOpRecvInitialMetadata, CallOpRecvMessage,CallOpClientSendClose, CallOpClientRecvStatus~
 ```
 
-## CompletionQueue
 ```mermaid
 classDiagram
-    class GrpcLibrary {
-        - bool grpc_init_called_
-        + GrpcLibrary(bool)
-        + ~GrpcLibrary()
-    }
-    class CompletionQueue {
-        - grpc_completion_queue* cq_
-        - grpc_atm avalanches_in_flight_
-        - grpc::internal::Mutex server_list_mutex_
-        - std::list<const grpc::Server*> server_list_
-        + bool Next(void** tag, bool* ok);
-    }
-    GrpcLibrary <|-- CompletionQueue
+    
 ```
