@@ -123,8 +123,44 @@ classDiagram
     CallOpSendInitialMetadata <|-- CallOpSet~CallOpSendInitialMetadata, CallOpSendMessage, CallOpRecvInitialMetadata, CallOpRecvMessage,CallOpClientSendClose, CallOpClientRecvStatus~
     CallOpSendMessage <|-- CallOpSet~CallOpSendInitialMetadata, CallOpSendMessage, CallOpRecvInitialMetadata, CallOpRecvMessage,CallOpClientSendClose, CallOpClientRecvStatus~
 ```
-
+#
 ```mermaid
 classDiagram
-    
+    namespace experimental {
+        class Scheduler {
+            + void Run(Closure *closure)
+            + void Run(absl::AnyInvocable<void()>)
+        }
+        class EventEnginePosixInterface {
+            + FileDescriptorCollection descriptors_
+        }
+        class Poller {
+            + WorkResult Work(EventEngine::Duration timeout, absl::FunctionRef<void()> shedule_poll_again)
+            + void Kick()
+        }
+        class PosixEventPoller {
+            - EventEnginePosixInterface posix_interface_
+        }
+        class Epoll1Poller {
+            - Scheduler *scheduler_
+        }
+        class PollPoller {
+            - Scheduler *scheduler_
+        }
+        class PosixEnginePollerManager {
+            - std::shared_ptr~PosixEventPoller~ poller_
+        }
+        class PosixEventEngine {
+            - PosixEnginePollerManager poller_manager_
+        }
+    }
+    Poller <|-- PosixEventPoller
+    EventEnginePosixInterface *-- PosixEventPoller
+    PosixEventPoller <|-- Epoll1Poller
+    Scheduler *-- Epoll1Poller
+    PosixEventPoller <|-- PollPoller
+    Scheduler <|-- PosixEnginePollerManager
+    PosixEventPoller *-- PosixEnginePollerManager
+    PosixEnginePollerManager *-- PosixEventEngine
 ```
+
