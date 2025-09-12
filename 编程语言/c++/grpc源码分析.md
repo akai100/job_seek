@@ -1,9 +1,30 @@
 ```mermaid
 classDiagram
-    class grpc_call {
+    namespace internal {
+        class GrpcLibrary {
+            - bool grpc_init_called_
+        }
+        class CompletionQueueTag {
+            + FinalizeResult(void** ag, bool* status)
+        }
+        class Call {
+            - CallHook *call_hook_
+            - CompletionQueue *cq_
+            - grpc_call *call_
+            - ClientRpcInfo *client_rpc_info_
+            - ServerRpcInfo *server_rpc_info_
+        }
+        class CallOpSetInterface {
+            + FillOps(Call* call) : void
+            + core_cq_tag() : void *
+            + SetHijackingState() : void
+            + ContinueFillOpsAfterInterception() : void
+            + ContinueFinalizeResultAfterInterception() : void
+        }
     }
-    class GrpcLibrary {
-        - bool grpc_init_called_
+    CompletionQueueTag <|-- CallOpSetInterface
+    Call <.. CallOpSetInterface
+    class grpc_call {
     }
     class RpcMethod {
         - const char* const name_
@@ -11,15 +32,15 @@ classDiagram
         - RpcType method_type_
         - void* const channel_tag_
     }
+    class ChannelCredentials {
+        - grpc_channel_credentials *const c_creds_
+        - CreateChannelImpl(const grpc::string &target, const ChannelArguments &args) : std::shared_ptr<Channel>
+        - CreateChannelWithInterceptors(const grpc::string &target, const ChannelArguments &args, std::vector<std::unique_ptr<ClientInterceptorFactoryInterface>> interceptor_creators)
+    }
+    GrpcLibrary <|-- ChannelCredentials
+    Channel <.. ChannelCredentials
     class CallHook {
         + PerformOpsOnCall(CallOpSetInterface *ops, Call *call)
-    }
-    class Call {
-        - CallHook *call_hook_
-        - CompletionQueue *cq_
-        - grpc_call *call_
-        - ClientRpcInfo *client_rpc_info_
-        - ServerRpcInfo *server_rpc_info_
     }
     class ChannelInterface {
         - CreateCall(const RpcMethod &methodm ClientContext *context, CompletionQueue *cq) : Call
@@ -74,6 +95,8 @@ classDiagram
     GrpcLibrary <|-- CompletionQueue
     RpcMethod <.. ChannelInterface
     CompletionQueue <.. ChannelInterface
+    ClientContext <.. ChannelInterface
+    CallOpSetInterface <.. ChannelInterface
     ChannelInterface <.. ClientRpcInfo
     ClientContext *.. ClientRpcInfo
     ClientRpcInfo *.. ClientContext
