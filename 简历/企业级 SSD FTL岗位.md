@@ -12,4 +12,13 @@
 
 2. 后台 TRIM
 
-+ 
++ 实现对 Cache TRIM BITMAP表和 DDR TRIM BITMAP 表的修改
+
+
+3. 后台转前台TRIM
+
++ 硬件模块定时扫描 Trim Bitmap 表，产生后台转前台Trim 发送到 硬件队列再上送到 RISC-V 上的CPU；
+
++ 完成对 Cache TRIM BITMAP 表和 DDR TRIM BITMAP 表的修改；
+
++ 批量完成对 FTL L2P 表的修改；
